@@ -6,6 +6,6 @@
 </head>
 <body>
 <h1>Hello from JSP!</h1>
-<a href="hello-controller">Go to Controller</a>
+<a href="rack-detail.jsp">Go to location</a>
 </body>
 </html>
