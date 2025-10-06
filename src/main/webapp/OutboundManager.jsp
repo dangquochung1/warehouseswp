@@ -1,3 +1,4 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -19,12 +20,20 @@
             </aside>
 
             <section class="content-area">
-                <div class="order-summary">
-                    <div class="summary-box">total order</div>
-                    <div class="summary-box">Pending</div>
-                    <div class="summary-box">Progressing</div>
-                    <div class="summary-box">complete order</div>
-                </div>
+    <div class="order-summary">
+        <div class="summary-box">
+            Total Order: ${totalOutboundNumber}
+        </div>
+        <div class="summary-box">
+            Pending: ${totalPendingNumber}
+        </div>
+        <div class="summary-box">
+            In Progress: ${totalInProgressNumber}
+        </div>
+        <div class="summary-box">
+            Completed: ${totalCompletedNumber}
+        </div>
+    </div>
 
                 <div class="controls">
                     <input type="text" placeholder="search order..." class="search-input">

@@ -13,7 +13,7 @@ public class Orders {
     private String status;          // pending | processing | done | cancelled
     private String note;
 
-    public Orders() {}
+    public Orders(String string, String rsString, String s, String string1, String rsString1, String s1, String string2, String rsString2, String s2) {}
 
     public Orders(String orderId, String type) {
         this.orderId = orderId;
