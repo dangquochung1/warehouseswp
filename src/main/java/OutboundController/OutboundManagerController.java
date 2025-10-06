@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
-package OutboundController.OutboundController;
+package OutboundController;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -16,7 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  * @author Admin
  */
-public class OutboundUpdateOrderController extends HttpServlet {
+public class OutboundManagerController extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -33,10 +33,10 @@ public class OutboundUpdateOrderController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet OutboundUpdateOrderController</title>");  
+            out.println("<title>Servlet OutboundManagerController</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet OutboundUpdateOrderController at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet OutboundManagerController at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
