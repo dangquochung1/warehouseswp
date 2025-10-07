@@ -38,18 +38,17 @@ public class OutboundDAO {
             rs = ps.executeQuery();
             while (rs.next()) {
                 list.add(new Orders(
-                        rs.getString(1),
-                        rs.getString(2),
-                        rs.getString(3),
-                        rs.getString(4),
-                        rs.getString(5),
-                        rs.getString(6),
-                        rs.getString(7),
-                        rs.getString(8),
-                        rs.getString(9)
+                        rs.getString("order_id"),
+                        rs.getString("type"),
+                        rs.getString("created_by"),
+                        rs.getString("assigned_to"),
+                        rs.getDate("created_at"),
+                        rs.getDate("scheduled_date"),
+                        rs.getString("schedule_id"),
+                        rs.getString("status"),
+                        rs.getString("note")
                 ));
-            }
-        } catch (Exception e) {
+            }     } catch (Exception e) {
             e.printStackTrace();
         } finally {
             try { if (rs != null) rs.close(); } catch (Exception e) {}
@@ -58,6 +57,7 @@ public class OutboundDAO {
         }
         return list;
     }
+
 
     public int getTotalOutboundNumber() {
         int total = 0;
@@ -136,5 +136,30 @@ public class OutboundDAO {
         return total;
     }
 
+    public static void main(String[] args) {
+        OutboundDAO dao = new OutboundDAO();
+        List<Orders> list = dao.getAllOutboundOrders();
 
+        if (list.isEmpty()) {
+            System.out.println("⚠️ Không có dữ liệu outbound orders trong database!");
+        } else {
+            System.out.println("✅ Danh sách outbound orders:");
+            for (Orders o : list) {
+                System.out.println(
+                        "Order ID: " + o.getOrderId() +
+                                " | Create Date: " + o.getCreatedAt() +
+                                " | Create By: " + o.getCreatedBy() +
+                                " | Assigned To: " + o.getAssignedTo() +
+                                " | Status: " + o.getStatus()
+                );
+            }
+        }
+
+        // Kiểm tra thống kê
+        System.out.println("\n📊 Thống kê số lượng:");
+        System.out.println("Tổng outbound: " + dao.getTotalOutboundNumber());
+        System.out.println("Pending: " + dao.getTotalPendingNumber());
+        System.out.println("Processing: " + dao.getTotalInProgressNumber());
+        System.out.println("Done: " + dao.getTotalCompletedNumber());
+    }
 }

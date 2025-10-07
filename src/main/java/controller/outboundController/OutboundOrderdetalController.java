@@ -3,24 +3,20 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
-package OutboundController;
+package controller.outboundController;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import model.Orders;
 
-import dal.OutboundDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.List;
 
 /**
  *
  * @author Admin
  */
-public class OutboundManagerController extends HttpServlet {
+public class OutboundOrderdetalController extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -32,21 +28,7 @@ public class OutboundManagerController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        OutboundDAO obdao = new OutboundDAO();
 
-        List<Orders> Orderlist = obdao.getAllOutboundOrders();
-
-        int totalOutboundNumber = obdao.getTotalOutboundNumber();
-        int totalPendingNumber = obdao.getTotalPendingNumber();
-        int totalInProgressNumber = obdao.getTotalInProgressNumber();
-        int totalCompletedNumber = obdao.getTotalCompletedNumber();
-
-        request.setAttribute("totalOutboundNumber", totalOutboundNumber);
-        request.setAttribute("totalPendingNumber", totalPendingNumber);
-        request.setAttribute("totalInProgressNumber", totalInProgressNumber);
-        request.setAttribute("totalCompletedNumber", totalCompletedNumber);
-        request.setAttribute("Orderlist", Orderlist);
-        request.getRequestDispatcher("OutboundManager.jsp").forward(request, response);
     } 
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
