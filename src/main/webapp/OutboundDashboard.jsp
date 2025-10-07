@@ -77,22 +77,22 @@
     <div class="action-buttons-table" style="display:flex; gap:10px;">
         <c:choose>
             <c:when test="${odlist.status == 'done'}">
-                <a href="#" class="view-btn">View</a>
+                <a href="${pageContext.request.contextPath}/outboundorderdetail?odid=${odlist.orderId}" class="view-btn">View</a>
             </c:when>
 
             <c:when test="${odlist.status == 'pending'}">
-                <a href="#" class="view-btn">View</a>
+                <a href="${pageContext.request.contextPath}/outboundorderdetail?odid=${odlist.orderId}" class="view-btn">View</a>
                 <a href="#" class="update-btn">Update</a>
                 <a href="#" class="cancel-btn">Cancel</a>
             </c:when>
 
             <c:when test="${odlist.status == 'processing'}">
-                <a href="#" class="view-btn">View</a>
+                <a href="${pageContext.request.contextPath}/outboundorderdetail?odid=${odlist.orderId}" class="view-btn">View</a>
                 <a href="#" class="update-btn">Update</a>
             </c:when>
 
             <c:otherwise>
-                <a href="#" class="view-btn">View</a>
+                <a href="${pageContext.request.contextPath}/outboundorderdetail?odid=${odlist.orderId}" class="view-btn">View</a>
             </c:otherwise>
         </c:choose>
     </div>

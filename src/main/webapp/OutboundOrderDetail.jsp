@@ -1,4 +1,4 @@
-
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="vi">
 <%@include file="SideBar.jsp" %>
@@ -15,16 +15,17 @@
 <div class="row">
 <div class="col-lg-6col-sm-12 col-12">
         <!-- Grid thông tin -->
+        <c:forEach var="obdetail" items="${orderdetail}">
         <section class="info-grid-form" style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom:20px;">
-            <div><strong>Reference No:</strong> Xxx01</div>
-            <div><strong>Create By:</strong> NHV</div>
-            <div><strong>Location:</strong> Store A01</div>
-            <div><strong>Order Date:</strong> 01/03/2025</div>
-            <div><strong>Responsible staff:</strong> Ng Van A</div>
-            <div><strong>Expected ship date:</strong> 05/03/2025</div>
-            <div><strong>Status:</strong> <span style="color:orange;">In Progress</span></div>
+            <div><strong>Outbound Order ID:</strong> ${obdetail.orderId}</div>
+            <div><strong>Create By:</strong> ${obdetail.createdBy}</div>
+            <div><strong>Location:</strong> ...</div>
+            <div><strong>Order Date:</strong> ${obdetail.createdAt}</div>
+            <div><strong>Responsible staff:</strong> ${obdetail.assignedTo}</div>
+            <div><strong>Expected ship date:</strong> ${obdetail.scheduledDate}</div>
+            <div><strong>Status:</strong> <span style="color:orange;">${obdetail.status}</span></div>
         </section>
-
+        </c:forEach>
         <!-- Bảng danh sách sản phẩm -->
         <section class="product-section-form">
             <h3 style="margin-bottom:10px;">List Product</h3>
@@ -33,27 +34,20 @@
                     <thead>
                         <tr style="background:#2f3e47; color:#fff;">
                             <th style="padding:8px; border:1px solid #ccc;">Stt</th>
-                            <th style="padding:8px; border:1px solid #ccc;">ID</th>
                             <th style="padding:8px; border:1px solid #ccc;">Product name</th>
                             <th style="padding:8px; border:1px solid #ccc;">Quantity</th>
                             <th style="padding:8px; border:1px solid #ccc;">Note</th>
                         </tr>
                     </thead>
                     <tbody>
+                    <c:forEach var="pod" items="${productOrderdetail}">
                         <tr>
-                            <td style="padding:8px; border:1px solid #ccc;">1</td>
-                            <td style="padding:8px; border:1px solid #ccc;">X01</td>
-                            <td style="padding:8px; border:1px solid #ccc;">AOG 244hz Monitor</td>
-                            <td style="padding:8px; border:1px solid #ccc;">2</td>
-                            <td style="padding:8px; border:1px solid #ccc;">Khách hàng gấp</td>
+                            <td style="padding:8px; border:1px solid #ccc;">...</td>
+                            <td style="padding:8px; border:1px solid #ccc;">${pod.productNamebyId}</td>
+                            <td style="padding:8px; border:1px solid #ccc;">${pod.quantity_actual}</td>
+                            <td style="padding:8px; border:1px solid #ccc;">${pod.note}</td>
                         </tr>
-                        <tr>
-                            <td style="padding:8px; border:1px solid #ccc;">2</td>
-                            <td style="padding:8px; border:1px solid #ccc;">Y15</td>
-                            <td style="padding:8px; border:1px solid #ccc;">Laptop Gaming Pro P15</td>
-                            <td style="padding:8px; border:1px solid #ccc;">1</td>
-                            <td style="padding:8px; border:1px solid #ccc;">Kiểm tra kỹ seal</td>
-                        </tr>
+                    </c:forEach>
                     </tbody>
                 </table>
             </div>

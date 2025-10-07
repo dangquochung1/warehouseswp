@@ -269,7 +269,7 @@
                     <li class="submenu">
                         <a href="javascript:void(0);"><img src="assets/img/icons/quotation1.svg" alt="img"><span> Outbound Manager</span> <span class="menu-arrow"></span></a>
                         <ul>
-                            <li><a href="OutboundDashboard.jsp" class="active">Outbound Dashboard</a></li>
+                            <li><a href="outboundmanager" class="active">Outbound Dashboard</a></li>
                             <li><a href="createOutbounOrder.html" >Create Outbound Order</a></li>
                             <li><a href="#" >Líst Cancel Order</a></li>
 

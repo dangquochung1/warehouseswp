@@ -6,17 +6,21 @@
 package controller.outboundController;
 
 import java.io.IOException;
+import java.util.List;
 
+import dal.OutboundDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import model.OrderDetail;
+import model.Orders;
 
 /**
  *
  * @author Admin
  */
-public class OutboundOrderdetalController extends HttpServlet {
+public class OutboundOrderdetailController extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -29,7 +33,17 @@ public class OutboundOrderdetalController extends HttpServlet {
     throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
 
-    } 
+        OutboundDAO obdao = new OutboundDAO();
+
+        String od_id = request.getParameter("odid");
+
+        List<Orders> orderDetail = obdao.getOutboundOrderByID(od_id);
+        List<OrderDetail>  productOrderdetail = obdao.getOutboundOrderdetailByOrderID(od_id);
+
+        request.setAttribute("productOrderdetail", productOrderdetail);
+        request.setAttribute("orderdetail", orderDetail);
+        request.getRequestDispatcher("OutboundOrderDetail.jsp").forward(request, response);
+    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /** 

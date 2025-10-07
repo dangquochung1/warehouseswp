@@ -4757,7 +4757,7 @@
     </servlet>
     <servlet>
         <servlet-name>OutboundOrderdetalController</servlet-name>
-        <servlet-class>controller.outboundController.OutboundOrderdetalController</servlet-class>
+        <servlet-class>controller.outboundController.OutboundOrderdetailController</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>OutboundCreateOrderController</servlet-name>

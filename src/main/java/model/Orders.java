@@ -4,7 +4,7 @@ import java.util.Date;
 
 
 
-public class Orders {
+public class Orders extends OrderDetail {
     private String orderId;
     private String type;            // inbound | outbound | stocktaking
     private String createdBy;       // Manager tạo
@@ -15,7 +15,7 @@ public class Orders {
     private String status;          // pending | processing | done | cancelled
     private String note;
 
-    public Orders() {
+    public Orders(String orderdetailId, String orderId, String productId, int quantityExpected, int quantityActual, float price, String note) {
     }
 //    public Orders(String string, String rsString, String s, String string1, String rsString1, String s1, String string2, String rsString2, String s2) {}
 
