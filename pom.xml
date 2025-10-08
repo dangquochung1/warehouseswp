@@ -17,18 +17,6 @@
         <junit.version>5.11.0</junit.version>
     </properties>
 
-    <repositories>
-        <repository>
-            <id>microsoft</id>
-            <name>Microsoft JDBC Repository</name>
-            <url>https://maven.microsoft.com/</url>
-        </repository>
-        <repository>
-            <id>central</id>
-            <url>https://repo.maven.apache.org/maven2</url>
-        </repository>
-    </repositories>
-
     <dependencies>
         <dependency>
             <groupId>jakarta.servlet</groupId>
@@ -48,12 +36,6 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>com.microsoft.sqlserver</groupId>
-            <artifactId>mssql-jdbc</artifactId>
-            <version>12.2.0.jre11</version>
-        </dependency>
-
     </dependencies>
 
     <build>
