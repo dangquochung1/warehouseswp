@@ -11,6 +11,7 @@ body {
     background: #f5f7fa;
 }
 h1 { margin-bottom: 16px; font-size: 20px; }
+
 .grid {
     display: grid;
     grid-template-columns: repeat(var(--cols), var(--cell-width));
@@ -37,30 +38,27 @@ h1 { margin-bottom: 16px; font-size: 20px; }
     box-shadow: 0 6px 18px rgba(16,24,40,0.08);
 }
 
-/* Container for the two stacked texts */
 .cell .stack {
     display: flex;
-    flex-direction: column; /* stacked vertically */
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     line-height: 1;
     text-align: center;
     font-weight: 600;
 }
-
 .rack-name {
     font-size: 14px;
     color: #0f172a;
     margin-bottom: 4px;
 }
-
 .capacity {
     font-size: 13px;
     color: #334155;
     font-weight: 700;
 }
 
-/* small badge for status (optional) */
+/* badge trạng thái */
 .badge {
     position: absolute;
     top: 6px;
@@ -71,20 +69,10 @@ h1 { margin-bottom: 16px; font-size: 20px; }
     font-weight: 700;
     color: white;
 }
-.badge.ok { background: #10b981; }       /* green */
-.badge.full { background: #ef4444; }     /* red */
-.badge.warn { background: #f59e0b; }     /* amber */
+.badge.ok { background: #10b981; }
+.badge.full { background: #ef4444; }
+.badge.warn { background: #f59e0b; }
 
-/* Optional: vertical rotated text (if you want physically rotated letters) */
-.vertical {
-    writing-mode: vertical-rl;
-    transform: rotate(180deg);
-    font-weight: 700;
-    font-size: 13px;
-    letter-spacing: 2px;
-}
-
-/* responsive */
 @media (max-width: 980px) {
     :root { --cell-width: 96px; --cell-height: 70px; }
 }

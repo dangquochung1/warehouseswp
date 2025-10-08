@@ -63,4 +63,15 @@ public class LotDetail {
     public void setQuantityRemaining(int quantityRemaining) {
         this.quantityRemaining = quantityRemaining;
     }
+    @Override
+    public String toString() {
+        return "LotDetail{" +
+                "lotDetailId='" + lotDetailId + '\'' +
+                ", lotId='" + lotId + '\'' +
+                ", productId='" + productId + '\'' +
+                ", purchasePrice=" + purchasePrice +
+                ", quantityTotal=" + quantityTotal +
+                ", quantityRemaining=" + quantityRemaining +
+                '}';
+    }
 }
