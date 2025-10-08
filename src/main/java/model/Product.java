@@ -8,7 +8,7 @@ public class Product {
     private int quantityAtReal;
     private double avgPrice;
     private String description;
-
+    private String rackId;
     public Product() {}
 
     public Product(String productId, String name) {
@@ -70,5 +70,12 @@ public class Product {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getRackId() {
+        return rackId;
+    }
+    public void setRackId(String rackId) {
+        this.rackId = rackId;
     }
 }

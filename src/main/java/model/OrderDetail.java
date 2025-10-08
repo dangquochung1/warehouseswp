@@ -10,6 +10,7 @@ public class OrderDetail {
     private double price;
     private String note;
     private String productNamebyId;
+    private String rackId;
 
     public OrderDetail() {}
 
@@ -100,5 +101,11 @@ public class OrderDetail {
 
     public void setNote(String note) {
         this.note = note;
+    }
+    public String getRackId() {
+        return rackId;
+    }
+    public void setRackId(String rackId) {
+        this.rackId = rackId;
     }
 }
