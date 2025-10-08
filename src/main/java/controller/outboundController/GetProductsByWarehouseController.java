@@ -37,7 +37,7 @@ public class GetProductsByWarehouseController extends HttpServlet {
             String json = "[";
             for (int i = 0; i < products.size(); i++) {
                 Product p = products.get(i);
-                // thêm aisleId nếu cần thiết
+
                 json += String.format("{\"productId\":\"%s\",\"productName\":\"%s\",\"rackId\":\"%s\"}",
                         p.getProductId(), p.getName(), p.getRackId());
                 if (i < products.size() - 1) json += ",";

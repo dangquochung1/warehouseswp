@@ -16,6 +16,12 @@ public class Product {
         this.name = name;
     }
 
+    public Product(String productId, String name, String rackId) {
+        this.productId = productId;
+        this.name = name;
+        this.rackId = rackId;
+    }
+
     public String getProductId() {
         return productId;
     }
