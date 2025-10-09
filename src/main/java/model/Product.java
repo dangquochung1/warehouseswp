@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Date;
+
 public class Product {
     private String productId;
     private String img;
@@ -9,6 +11,9 @@ public class Product {
     private double avgPrice;
     private String description;
     private String rackId;
+    private Date receivedDate;
+    private double purchasePrice;
+
     public Product() {}
 
     public Product(String productId, String name) {
@@ -20,6 +25,23 @@ public class Product {
         this.productId = productId;
         this.name = name;
         this.rackId = rackId;
+    }
+
+
+    public Date getReceivedDate() {
+        return receivedDate;
+    }
+
+    public void setReceivedDate(Date receivedDate) {
+        this.receivedDate = receivedDate;
+    }
+
+    public double getPurchasePrice() {
+        return purchasePrice;
+    }
+
+    public void setPurchasePrice(double purchasePrice) {
+        this.purchasePrice = purchasePrice;
     }
 
     public String getProductId() {

@@ -6,11 +6,17 @@ public class OrderDetail {
     private String lotDetailId; //???????
     private String productId;
     private int quantity_expected;
-    private int quantity_actual;
-    private double price;
+    private int quantity_actual; //quantity all products
+    private double price; // total price
     private String note;
+
+    //------------------------
     private String productNamebyId;
+    private String area;
+    private String aisleId;
     private String rackId;
+    //------------------------
+
 
     public OrderDetail() {}
 
@@ -30,12 +36,21 @@ public class OrderDetail {
         this.productNamebyId = productNamebyId;
     }
 
-    public int getQuantity_expected() {
-        return quantity_expected;
+
+    public String getArea() {
+        return area;
     }
 
-    public void setQuantity_expected(int quantity_expected) {
-        this.quantity_expected = quantity_expected;
+    public void setArea(String area) {
+        this.area = area;
+    }
+
+    public String getAisleId() {
+        return aisleId;
+    }
+
+    public void setAisleId(String aisleId) {
+        this.aisleId = aisleId;
     }
 
     public int getQuantity_actual() {
