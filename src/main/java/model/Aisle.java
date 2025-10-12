@@ -45,4 +45,13 @@ public class Aisle {
     public void setDescription(String description) {
         this.description = description;
     }
+    @Override
+    public String toString() {
+        return "Aisle{" +
+                "aisleId='" + aisleId + '\'' +
+                ", areaId='" + areaId + '\'' +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }
