@@ -9,24 +9,26 @@ public class WarehouseDAO extends DBContext {
 
     // 1️⃣ Lấy toàn bộ Warehouse
     public List<Warehouse> getAllWarehouses() {
-        String sql = "SELECT * FROM [dbo].[warehouse]";
-        List<Warehouse> list = new ArrayList<>();
-        try (PreparedStatement ps = connection.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        List<Warehouse> warehouses = new ArrayList<>();
+        String sql = "SELECT * FROM warehouse";
+
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
-                Warehouse w = new Warehouse();
-                w.setWarehouseId(rs.getString("warehouseid"));
-                w.setName(rs.getString("name"));
-                w.setLocation(rs.getString("location"));
-                w.setDescription(rs.getString("description"));
-                list.add(w);
+                Warehouse warehouse = new Warehouse();
+                warehouse.setWarehouseId(rs.getString("warehouseid"));
+                warehouse.setName(rs.getString("name"));
+                warehouse.setLocation(rs.getString("location"));
+                warehouse.setDescription(rs.getString("description"));
+                warehouses.add(warehouse);
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return list;
+
+        return warehouses;
     }
 
     // 2️⃣ Lấy Warehouse theo ID

@@ -72,8 +72,9 @@ public class Rack {
                 "rackId='" + rackId + '\'' +
                 ", aisleId='" + aisleId + '\'' +
                 ", name='" + name + '\'' +
-                ", sum='" + sum + '\'' +
-                ", description=" + description +
+                ", sum=" + sum +
+                ", description='" + description + '\'' +
                 '}';
     }
+
 }

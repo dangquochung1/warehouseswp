@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
-<%@ page import="java.util.*, model.Warehouse, model.Area" %>
+<%@ page import="java.util.*, model.*" %>
 <html>
 <head>
   <title>Sơ đồ kho Laptop</title>
@@ -32,8 +32,6 @@
     }
 
     :root {
-      --cols: 7;
-      --rows: 6;
       --cell-gap: 8px;
       --cell-width: 120px;
       --cell-height: 80px;
@@ -41,8 +39,6 @@
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(var(--cols), var(--cell-width));
-      grid-template-rows: repeat(var(--rows), var(--cell-height));
       gap: var(--cell-gap);
       margin-top: 10px;
     }
@@ -53,6 +49,7 @@
       border-radius: 6px;
       box-shadow: 0 1px 2px rgba(16,24,40,0.05);
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
     }
@@ -67,17 +64,17 @@
       color: #475569;
     }
 
-    .stack {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      line-height: 1.2;
+    .aisle-header {
+      font-weight: bold;
+      color: #2563eb;
+      margin-bottom: 6px;
     }
   </style>
 </head>
 <body>
 
 <h1>Sơ đồ kho Laptop</h1>
+
 <%
   List<Warehouse> warehouses = (List<Warehouse>) request.getAttribute("warehouses");
   List<Area> areas = (List<Area>) request.getAttribute("areas");
@@ -115,35 +112,62 @@
 <p><b>Warehouse ID:</b> <%= selectedWarehouse %></p>
 <p><b>Area ID:</b> <%= selectedArea %></p>
 
-
 <%
-  String warehouse = request.getParameter("warehouse");
-  if (warehouse == null) warehouse = "W1";
+  List<Aisle> aisles = (List<Aisle>) request.getAttribute("aisles");
+  List<Rack> racks = (List<Rack>) request.getAttribute("racks");
 
-  String area = request.getParameter("area");
-  if (area == null) area = "A";
+  if (aisles != null && racks != null) {
 
-  int rows = 6;
-  int cols = 7;
+    // Tạo map: aisleId -> list<Rack>
+    Map<String, List<Rack>> map = new LinkedHashMap<>();
+    int maxRows = 0;
+    for (Aisle a : aisles) {
+      List<Rack> listRacks = new ArrayList<>();
+      for (Rack r : racks) {
+        if (r.getAisleId() != null && r.getAisleId().equalsIgnoreCase(a.getAisleId())) {
+          listRacks.add(r);
+        }
+      }
+      map.put(a.getAisleId(), listRacks);
+      if (listRacks.size() > maxRows) maxRows = listRacks.size();
+    }
+
+    int cols = aisles.size();
 %>
 
-<!--<h2>Warehouse <%= warehouse %> - Area <%= area %></h2> -->
-
-<div class="grid">
+<div class="grid" style="grid-template-columns: repeat(<%= cols %>, var(--cell-width)); grid-template-rows: repeat(<%= maxRows+1 %>, var(--cell-height));">
   <%
-    for (int r = 1; r <= rows; r++) {
-      for (int c = 1; c <= cols; c++) {
-        String rackId = warehouse + "_" + area + "_R" + r + "C" + c;
-        String rackName = "R" + r + "C" + c;
+    // Row 0: Aisle headers
+    for (Aisle a : aisles) {
   %>
-  <div class="cell" id="<%= rackId %>">
-    <div class="stack">
-      <div class="rack-name"><%= rackName %></div>
-      <div class="capacity">/ 50</div>
-    </div>
+  <div class="cell aisle-header"><%= a.getName() %></div>
+  <%
+    }
+
+    // Rows: racks
+    for (int row = 0; row < maxRows; row++) {
+      for (Aisle a : aisles) {
+        List<Rack> listRacks = map.get(a.getAisleId());
+        if (listRacks != null && row < listRacks.size()) {
+          Rack r = listRacks.get(row);
+  %>
+  <div class="cell">
+    <div class="rack-name"><%= r.getRackId() %></div>
+    <div class="capacity"><%= r.getSum() %> / 50</div>
   </div>
   <%
+  } else {
+  %>
+  <div class="cell"></div>
+  <%
+        }
       }
+    }
+
+  } else {
+  %>
+  <p>Không có dữ liệu để hiển thị.</p>
+  <%
     }
   %>
 </div>
