@@ -58,6 +58,7 @@ public class OutboundDAO {
         }
         return list;
     }
+
     public List<Orders> getOutboundOrderByID(String od_id) {
         List<Orders> list = new ArrayList<>();
         String query = "SELECT * FROM orders WHERE type = 'outbound' AND order_id = ?";
