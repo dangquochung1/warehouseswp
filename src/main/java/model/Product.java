@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Date;
+
 public class Product {
     private String productId;
     private String img;
@@ -8,12 +10,38 @@ public class Product {
     private int quantityAtReal;
     private double avgPrice;
     private String description;
+    private String rackId;
+    private Date receivedDate;
+    private double purchasePrice;
 
     public Product() {}
 
     public Product(String productId, String name) {
         this.productId = productId;
         this.name = name;
+    }
+
+    public Product(String productId, String name, String rackId) {
+        this.productId = productId;
+        this.name = name;
+        this.rackId = rackId;
+    }
+
+
+    public Date getReceivedDate() {
+        return receivedDate;
+    }
+
+    public void setReceivedDate(Date receivedDate) {
+        this.receivedDate = receivedDate;
+    }
+
+    public double getPurchasePrice() {
+        return purchasePrice;
+    }
+
+    public void setPurchasePrice(double purchasePrice) {
+        this.purchasePrice = purchasePrice;
     }
 
     public String getProductId() {
@@ -70,5 +98,12 @@ public class Product {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getRackId() {
+        return rackId;
+    }
+    public void setRackId(String rackId) {
+        this.rackId = rackId;
     }
 }

@@ -1,0 +1,193 @@
+/* Thiết lập cơ bản */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f0f0f0;
+    color: #333;
+    display: flex;
+    justify-content: center;
+}
+
+.container-form {
+    width: 800px;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    padding: 30px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Header */
+.form-header h1 {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin: 0 0 5px 0;
+}
+
+.form-header .create-date {
+    font-size: 0.9em;
+    margin-bottom: 25px;
+    color: #333;
+    font-weight: bold;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+}
+
+/* Form Thông tin (Info Grid) */
+.info-grid-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Chia 2 cột chính */
+    gap: 15px 30px;
+    margin-bottom: 30px;
+    font-size: 0.9em;
+}
+
+.info-item-form {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+}
+
+.info-item-form .label {
+    min-width: 150px; 
+    margin-right: 5px;
+}
+
+/* Hiển thị giá trị cố định */
+.info-item-form .value {
+    font-weight: bold;
+}
+
+/* Các trường có thể chỉnh sửa (Input/Select) */
+.info-item-form input[type="text"],
+.info-item-form select {
+    flex-grow: 1;
+    padding: 3px 5px;
+    border: 1px solid #333; 
+    font-weight: bold;
+}
+
+.info-item-form.editable-field:nth-child(even) input[type="text"] {
+    max-width: 100px; 
+}
+
+.status-pending, .status-inprogress {
+    color: #333; 
+}
+
+/* Product Section Header */
+.product-section-form {
+    margin-top: 20px;
+}
+
+.product-header-form {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.product-header-form h2 {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin: 0;
+}
+
+.add-more-btn {
+    padding: 8px 15px;
+    background-color: #e0e0e0; 
+    color: #333;
+    border: 1px solid #333;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 3px;
+}
+
+/* Product List Table */
+.product-list-table-form table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.product-list-table-form th,
+.product-list-table-form td {
+    padding: 8px 10px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+/* Tiêu đề bảng */
+.product-list-table-form thead th {
+    background-color: #ffffff;
+    font-weight: bold;
+    color: #333;
+    border-bottom: 2px solid #000080; /* Đường kẻ xanh đậm */
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+/* Căn chỉnh cột */
+.col-stt { width: 5%; }
+.col-id { width: 15%; }
+.col-qty { width: 10%; }
+
+/* Action Footer */
+.action-footer-form {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+.back-btn {
+    background: none;
+    border: none;
+    color: #333;
+    cursor: pointer;
+    font-size: 1em;
+    padding: 0;
+    font-weight: bold;
+}
+
+.update-btn {
+    padding: 8px 15px;
+    background-color: #e0e0e0;
+    color: #333;
+    border: 1px solid #333;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 3px;
+}
+
+/* Trạng thái đặc biệt */
+.status-pending-staff { /* Thêm class này cho màu Pending đậm hơn */
+    font-weight: bold;
+    color: #cc0000; /* Màu đỏ đậm cho trạng thái */
+}
+
+/* Action Footer (Footer của màn hình Detail Staff) */
+.action-footer-staff {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+.start-processing-btn {
+    padding: 10px 18px;
+    background-color: #4CAF50; /* Màu xanh lá nổi bật cho hành động chính */
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 3px;
+    font-size: 1em;
+    min-width: 150px;
+}
+.start-processing-btn:hover {
+    background-color: #45a049;
+}

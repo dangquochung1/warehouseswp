@@ -1,0 +1,99 @@
+/* Staff List Styles - Dành riêng cho màn hình nhân viên */
+
+/* Container chính của màn hình Staff List */
+.staff-list-container {
+    width: 90%;
+    max-width: 900px;
+    margin: 50px auto;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    color: #333;
+}
+
+/* Tiêu đề màn hình */
+.staff-list-header {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #333;
+}
+
+/* Bảng đơn hàng */
+.staff-order-list table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* Header Bảng (có nền vàng nhạt như ảnh gốc) */
+.staff-order-list thead th {
+    background-color: #ffffcc; 
+    font-weight: bold;
+    padding: 12px 15px;
+    text-align: left;
+    border: 1px solid #333;
+    border-collapse: collapse;
+}
+
+/* Nội dung Bảng */
+.staff-order-list tbody td {
+    padding: 10px 15px;
+    border: 1px solid #ccc; 
+    border-top: none; /* Giảm độ dày của viền ngang */
+}
+
+/* Căn chỉnh cột */
+.staff-order-list .col-stt { width: 5%; text-align: center; }
+.staff-order-list .col-id { width: 10%; }
+.staff-order-list .col-ref { width: 15%; }
+.staff-order-list .col-action { width: 15%; text-align: center; }
+
+/* Màu sắc Trạng thái (Status) */
+.status-pending-red {
+    font-weight: bold;
+    color: #ff4d4d; /* Đỏ nhạt */
+}
+
+.status-in-progress-orange {
+    font-weight: bold;
+    color: #ffaa00; /* Cam/Vàng */
+}
+
+.status-done-green {
+    font-weight: bold;
+    color: #4CAF50; /* Xanh lá */
+}
+
+/* Nút/Link Action View/Update */
+.action-link {
+    font-size: 0.9em;
+    font-weight: bold;
+    color: #000080; /* Xanh đậm (giống link) */
+    text-decoration: underline;
+    cursor: pointer;
+}
+/* Style cho nút hành động Confirm Complete */
+.confirm-complete-btn {
+    padding: 6px 10px;
+    font-size: 0.9em;
+    cursor: pointer;
+    border: 1px solid #333;
+    background-color: #e0e0e0; /* Nền xám nhạt */
+    color: #333;
+    border-radius: 3px;
+    font-weight: bold;
+    min-width: 120px;
+    transition: background-color 0.2s;
+}
+.confirm-complete-btn:hover {
+    background-color: #d4d4d4;
+}
+
+/* Style cho trạng thái Complete màu xanh lá */
+.status-complete-green {
+    font-weight: bold;
+    color: #4CAF50; /* Xanh lá */
+}

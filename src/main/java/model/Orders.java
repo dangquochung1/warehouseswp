@@ -2,7 +2,9 @@ package model;
 
 import java.util.Date;
 
-public class Orders {
+
+
+public class Orders extends OrderDetail {
     private String orderId;
     private String type;            // inbound | outbound | stocktaking
     private String createdBy;       // Manager tạo
@@ -13,12 +15,30 @@ public class Orders {
     private String status;          // pending | processing | done | cancelled
     private String note;
 
-    public Orders() {}
+    public Orders() {
+    }
 
-    public Orders(String orderId, String type) {
+    public Orders(String orderdetailId, String orderId, String productId, int quantityExpected, int quantityActual, float price, String note) {
+    }
+//    public Orders(String string, String rsString, String s, String string1, String rsString1, String s1, String string2, String rsString2, String s2) {}
+
+    public Orders(String orderId, String type, String createdBy, String assignedTo,
+                  java.sql.Date createdAt, java.sql.Date scheduledDate,
+                  String scheduleId, String status, String note) {
         this.orderId = orderId;
         this.type = type;
+        this.createdBy = createdBy;
+        this.assignedTo = assignedTo;
+        this.createdAt = createdAt;
+        this.scheduledDate = scheduledDate;
+        this.scheduleId = scheduleId;
+        this.status = status;
+        this.note = note;
     }
+
+
+
+
 
     public String getOrderId() {
         return orderId;
