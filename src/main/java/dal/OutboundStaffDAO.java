@@ -33,7 +33,7 @@ public class OutboundStaffDAO {
 
     public List<Orders> getAllOutboundOrdersForStaff() {
         List<Orders> list = new ArrayList<>();
-        String query = "SELECT * FROM orders WHERE type = 'outbound' AND status IN ('pending', 'processing', 'done');";
+        String query = "SELECT * FROM orders WHERE type = 'outbound' AND status IN ('pending', 'processing');";
         try {
             conn = getSafeConnection(); // 🔹 Dùng connection tạm an toàn
             ps = conn.prepareStatement(query);
