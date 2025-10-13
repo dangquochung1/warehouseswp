@@ -44,4 +44,13 @@ public class Warehouse {
     public void setDescription(String description) {
         this.description = description;
     }
+    @Override
+    public String toString() {
+        return "Warehouse{" +
+                "warehouseId='" + warehouseId + '\'' +
+                ", name='" + name + '\'' +
+                ", location='" + location + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }
