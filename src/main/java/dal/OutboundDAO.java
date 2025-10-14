@@ -59,6 +59,36 @@ public class OutboundDAO {
         return list;
     }
 
+    public List<Orders> getCompleOutboundOrders() {
+        List<Orders> list = new ArrayList<>();
+        String query = "SELECT * FROM orders WHERE type = 'outbound' AND status IN ('done');";
+        try {
+            conn = getSafeConnection(); // 🔹 Dùng connection tạm an toàn
+            ps = conn.prepareStatement(query);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new Orders(
+                        rs.getString("order_id"),
+                        rs.getString("type"),
+                        rs.getString("created_by"),
+                        rs.getString("assigned_to"),
+                        rs.getDate("created_at"),
+                        rs.getDate("scheduled_date"),
+                        rs.getString("schedule_id"),
+                        rs.getString("status"),
+                        rs.getString("note")
+                ));
+            }     } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try { if (rs != null) rs.close(); } catch (Exception e) {}
+            try { if (ps != null) ps.close(); } catch (Exception e) {}
+            try { if (conn != null) conn.close(); } catch (Exception e) {}
+        }
+        return list;
+    }
+
+
     public List<Orders> getOutboundOrderByID(String od_id) {
         List<Orders> list = new ArrayList<>();
         String query = "SELECT * FROM orders WHERE type = 'outbound' AND order_id = ?";
