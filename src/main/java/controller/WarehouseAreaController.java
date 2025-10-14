@@ -26,37 +26,64 @@ public class WarehouseAreaController extends HttpServlet {
         AisleDAO aisleDAO = new AisleDAO();
         RackDAO rackDAO = new RackDAO();
 
-        // --- WAREHOUSE ---
+        // --- WAREHOUSES ---
         List<Warehouse> warehouses = warehouseDAO.getAllWarehouses();
         request.setAttribute("warehouses", warehouses);
 
         String warehouseId = request.getParameter("warehouse");
-        if (warehouseId == null && !warehouses.isEmpty()) {
+        if ((warehouseId == null || warehouseId.isEmpty()) && !warehouses.isEmpty()) {
             warehouseId = warehouses.get(0).getWarehouseId();
         }
 
-        // --- AREA ---
-        List<Area> areas = areaDAO.getAreasByWarehouseId(warehouseId);
+        // --- AREAS (tùy theo warehouseId) ---
+        List<Area> areas = new ArrayList<>();
+        if (warehouseId != null) {
+            areas = areaDAO.getAreasByWarehouseId(warehouseId);
+        }
         request.setAttribute("areas", areas);
 
         String areaId = request.getParameter("area");
-        if (areaId == null && !areas.isEmpty()) {
+        // Nếu areaId null hoặc không nằm trong list areas -> reset về area đầu tiên (nếu có)
+        boolean areaValid = false;
+        if (areaId != null && !areaId.isEmpty()) {
+            for (Area a : areas) {
+                if (areaId.equalsIgnoreCase(a.getAreaId())) {
+                    areaValid = true;
+                    break;
+                }
+            }
+        }
+        if (!areaValid && !areas.isEmpty()) {
             areaId = areas.get(0).getAreaId();
         }
 
-        // --- AISLE ---
-        List<Aisle> aisles = aisleDAO.getAislesByAreaId(areaId);
+        // --- AISLES (tùy theo areaId) ---
+        List<Aisle> aisles = new ArrayList<>();
+        if (areaId != null) {
+            aisles = aisleDAO.getAislesByAreaId(areaId);
+        }
         request.setAttribute("aisles", aisles);
 
         String aisleId = request.getParameter("aisle");
-        if (aisleId == null && !aisles.isEmpty()) {
+        // Validate aisleId tương tự
+        boolean aisleValid = false;
+        if (aisleId != null && !aisleId.isEmpty()) {
+            for (Aisle ai : aisles) {
+                if (aisleId.equalsIgnoreCase(ai.getAisleId())) {
+                    aisleValid = true;
+                    break;
+                }
+            }
+        }
+        if (!aisleValid && !aisles.isEmpty()) {
             aisleId = aisles.get(0).getAisleId();
         }
 
-        // --- RACK ---
+        // --- RACKS: lấy theo aisles hiện tại (toàn bộ aisles trong area) ---
         List<Rack> racks = new ArrayList<>();
         for (Aisle a : aisles) {
-            racks.addAll(rackDAO.getRacksByAisleId(a.getAisleId()));
+            List<Rack> tmp = rackDAO.getRacksByAisleId(a.getAisleId());
+            if (tmp != null) racks.addAll(tmp);
         }
         request.setAttribute("racks", racks);
 
@@ -65,6 +92,7 @@ public class WarehouseAreaController extends HttpServlet {
         request.setAttribute("selectedArea", areaId);
         request.setAttribute("selectedAisle", aisleId);
 
-        request.getRequestDispatcher("rack-detail.jsp").forward(request, response);
+        request.getRequestDispatcher("location.jsp").forward(request, response);
     }
+
 }

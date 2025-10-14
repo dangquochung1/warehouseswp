@@ -13,7 +13,7 @@ public class User {
     private Date dateOfBirth;
     private String address;
     private String image;
-    private String status;
+    private int status;
     private String rid; // role id
     private String wid; // warehouse id
 
@@ -105,11 +105,11 @@ public class User {
         this.image = image;
     }
 
-    public String getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 
