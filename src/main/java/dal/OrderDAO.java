@@ -48,9 +48,9 @@ public class OrderDAO extends DBContext {
                 psDetail.setString(1, detailId);
                 psDetail.setString(2, orderId);
                 psDetail.setString(3, detail.getProductId());
-                psDetail.setInt(4, detail.getQuantity_actual());
+                psDetail.setInt(4, detail.getQuantity_expected());
                 psDetail.setString(5, detail.getNote());
-                psDetail.setString(6, detail.getRackId());
+                psDetail.setString(6, detail.getAisleId());
                 psDetail.addBatch();
             }
 

@@ -6,18 +6,12 @@ public class OrderDetail {
     private String lotDetailId; //???????
     private String productId;
     private int quantity_expected;
-    private int quantity_actual; //quantity all products
-    private double price; // total price
+    private int quantity_actual;
+    private double price;
     private String note;
-
-    //------------------------
     private String productNamebyId;
-    private String area;
+
     private String aisleId;
-    private String rackId;
-    //------------------------
-
-
     public OrderDetail() {}
 
     public OrderDetail(String orderDetailId, String orderId, String lotDetailId) {
@@ -36,21 +30,12 @@ public class OrderDetail {
         this.productNamebyId = productNamebyId;
     }
 
-
-    public String getArea() {
-        return area;
+    public int getQuantity_expected() {
+        return quantity_expected;
     }
 
-    public void setArea(String area) {
-        this.area = area;
-    }
-
-    public String getAisleId() {
-        return aisleId;
-    }
-
-    public void setAisleId(String aisleId) {
-        this.aisleId = aisleId;
+    public void setQuantity_expected(int quantity_expected) {
+        this.quantity_expected = quantity_expected;
     }
 
     public int getQuantity_actual() {
@@ -67,14 +52,6 @@ public class OrderDetail {
 
     public void setProductNamebyId(String productNamebyId) {
         this.productNamebyId = productNamebyId;
-    }
-
-    public String getProductId() {
-        return productId;
-    }
-
-    public void setProductId(String productId) {
-        this.productId = productId;
     }
 
     public String getOrderDetailId() {
@@ -101,7 +78,6 @@ public class OrderDetail {
         this.lotDetailId = lotDetailId;
     }
 
-
     public double getPrice() {
         return price;
     }
@@ -117,10 +93,20 @@ public class OrderDetail {
     public void setNote(String note) {
         this.note = note;
     }
-    public String getRackId() {
-        return rackId;
+
+    public String getAisleId() {
+        return aisleId;
     }
-    public void setRackId(String rackId) {
-        this.rackId = rackId;
+
+    public void setAisleId(String aisleId) {
+        this.aisleId = aisleId;
+    }
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
     }
 }
