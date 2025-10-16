@@ -29,7 +29,6 @@ public class OutboundDAO {
         }
         return connection;
     }
-
     public List<Orders> getAllOutboundOrders() {
         List<Orders> list = new ArrayList<>();
         String query = "SELECT * FROM orders WHERE type = 'outbound' AND status IN ('pending', 'processing', 'done');";
@@ -58,7 +57,6 @@ public class OutboundDAO {
         }
         return list;
     }
-
     public List<Orders> getCompleOutboundOrders() {
         List<Orders> list = new ArrayList<>();
         String query = "SELECT * FROM orders WHERE type = 'outbound' AND status IN ('done');";
@@ -87,8 +85,6 @@ public class OutboundDAO {
         }
         return list;
     }
-
-
     public List<Orders> getOutboundOrderByID(String od_id) {
         List<Orders> list = new ArrayList<>();
         String query = "SELECT * FROM orders WHERE type = 'outbound' AND order_id = ?";
@@ -149,7 +145,6 @@ public class OutboundDAO {
         }
         return list;
     }
-
     public int getTotalOutboundNumber() {
         int total = 0;
         String query = "SELECT COUNT(*) AS total FROM orders WHERE type = 'outbound'";
@@ -226,6 +221,43 @@ public class OutboundDAO {
         }
         return total;
     }
+    public void deleteProduct(String od_id) {
+        String query = "DELETE FROM orders WHERE order_id = ?";
+        Connection conn = null;
+        PreparedStatement ps = null;
+
+        try {
+            conn = getSafeConnection(); // 🔹 Dùng connection tạm an toàn
+            ps = conn.prepareStatement(query);
+            rs = ps.executeQuery();
+            ps = conn.prepareStatement(query);
+            ps.setString(1, od_id);
+            ps.executeUpdate();
+
+            conn.commit(); // Xác nhận giao dịch
+        } catch (Exception e) {
+            if (conn != null) {
+                try {
+                    conn.rollback(); // Quay lại giao dịch nếu có lỗi
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+            e.printStackTrace();
+        } finally {
+            try {
+                if (ps != null) {
+                    ps.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
     public static void main(String[] args) {
         OutboundDAO dao = new OutboundDAO();

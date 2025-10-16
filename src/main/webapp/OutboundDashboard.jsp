@@ -83,7 +83,7 @@
             <c:when test="${odlist.status == 'pending'}">
                 <a href="${pageContext.request.contextPath}/outboundorderdetail?odid=${odlist.orderId}" class="view-btn">View</a>
                 <a href="#" class="update-btn">Update</a>
-                <a href="#" class="cancel-btn">Cancel</a>
+                <a href="${pageContext.request.contextPath}/outbounddeleteorder?odid=${odlist.orderId}" class="cancel-btn">Cancel</a>
             </c:when>
 
             <c:when test="${odlist.status == 'processing'}">

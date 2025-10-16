@@ -7,6 +7,7 @@ package controller.outboundController;
 
 import java.io.IOException;
 
+import jakarta.servlet.annotation.WebServlet;
 import model.Orders;
 
 import dal.OutboundDAO;
@@ -20,6 +21,8 @@ import java.util.List;
  *
  * @author Admin
  */
+
+@WebServlet(name = "OutbounddManagerController", urlPatterns = {"/outboundmanager"})
 public class OutboundManagerController extends HttpServlet {
    
     /** 
