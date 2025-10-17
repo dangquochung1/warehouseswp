@@ -3,6 +3,7 @@ package controller.outboundController;
 import java.io.IOException;
 import java.util.List;
 
+
 import dal.OutboundDAO;
 import dal.OutboundStaffDAO;
 import jakarta.servlet.ServletException;
@@ -10,11 +11,10 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import model.OrderDetail;
 import model.Orders;
 
-@WebServlet(name = "OutboundStaffListOrderController", urlPatterns = {"/outboundstafforderlist"})
-public class OutboundStaffListOrderController extends HttpServlet {
+@WebServlet(name = "OutboundCompleteOrderController", urlPatterns = {"/outboundcompleteorder"})
+public class OutboundCompleteOrderController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -25,12 +25,12 @@ public class OutboundStaffListOrderController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-            response.setContentType("text/html;charset=UTF-8");
+        response.setContentType("text/html;charset=UTF-8");
 
-        OutboundStaffDAO obtDAO = new OutboundStaffDAO();
-        List<Orders> orderList = obtDAO.getAllOutboundOrdersForStaff();
-        request.setAttribute("orderList", orderList);
-        request.getRequestDispatcher("OutboundStaffListOrder.jsp").forward(request, response);
+        OutboundDAO outboundDAO = new OutboundDAO();
+        List<Orders> completedOrderList = outboundDAO.getCompleOutboundOrders();
+        request.setAttribute("completedOrderList", completedOrderList);
+        request.getRequestDispatcher("OutboundCompleteOrder.jsp").forward(request, response);
 
     }
 
