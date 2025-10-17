@@ -7,6 +7,7 @@ public class LotDetail {
     private double purchasePrice;
     private int quantityTotal;
     private int quantityRemaining;
+    private int status;
 
     public LotDetail() {}
 
@@ -63,6 +64,15 @@ public class LotDetail {
     public void setQuantityRemaining(int quantityRemaining) {
         this.quantityRemaining = quantityRemaining;
     }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
         return "LotDetail{" +
@@ -72,6 +82,7 @@ public class LotDetail {
                 ", purchasePrice=" + purchasePrice +
                 ", quantityTotal=" + quantityTotal +
                 ", quantityRemaining=" + quantityRemaining +
+                ", status=" + status +
                 '}';
     }
 }

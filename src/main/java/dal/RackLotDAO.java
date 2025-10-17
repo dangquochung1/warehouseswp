@@ -148,6 +148,7 @@ public class RackLotDAO extends DBContext {
         String sql = """
         SELECT 
             l.lot_id,
+            rl.lotdetail_id,
             l.supplier_id,
             rl.quantity
         FROM racklot rl
@@ -163,6 +164,7 @@ public class RackLotDAO extends DBContext {
             while (rs.next()) {
                 Map<String, Object> map = new HashMap<>();
                 map.put("lotId", rs.getString("lot_id"));
+                map.put("lotdetailId", rs.getString("lotdetail_id"));
                 map.put("supplierId", rs.getString("supplier_id"));
                 map.put("quantity", rs.getInt("quantity"));
                 result.add(map);
@@ -204,6 +206,7 @@ public class RackLotDAO extends DBContext {
         for (Map<String, Object> lot : lotList) {
             System.out.println("Rack: " + testRackId +
                     " | LotID: " + lot.get("lotId") +
+                    " | LotDetailID: " + lot.get("lotdetailId") +
                     " | Supplier: " + lot.get("supplierId") +
                     " | Quantity: " + lot.get("quantity"));
         }

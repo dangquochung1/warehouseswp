@@ -1,0 +1,228 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f5f7fa;
+    padding: 20px;
+    color: #0f172a;
+}
+.container {
+    display: flex;
+    justify-content: center;
+}
+h1 {
+    font-size: 22px;
+    margin-bottom: 20px;
+    padding:20px;
+    text-align: center;
+}
+
+form {
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-direction: column;
+    padding: 40px;
+    margin-right:80px;
+    margin-left:30px;
+}
+
+label { font-weight: 600; }
+select {
+    padding: 6px 10px;
+    border-radius: 4px;
+    border: 1px solid #cbd5e1;
+    font-size: 14px;
+}
+
+:root {
+    --cell-gap: 8px;
+    --cell-width: 120px;
+    --cell-height: 80px;
+}
+
+.grid {
+    display: grid;
+    gap: var(--cell-gap);
+}
+
+.cell {
+    border: 1px solid #d0d6dd;
+    border-radius: 6px;
+    box-shadow: 0 1px 2px rgba(16,24,40,0.05);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s;
+}
+
+/* ✅ màu theo trạng thái */
+.cell.green {
+    background: #bbf7d0; /* xanh lá nhạt */
+}
+.cell.yellow {
+    background: #fef9c3; /* vàng nhạt */
+}
+.cell.orange {
+    background: #fdba74; /* cam nhạt */
+}
+
+.rack-name {
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.capacity {
+    font-size: 13px;
+    color: #475569;
+}
+
+.aisle-header {
+    font-weight: bold;
+    color: #2563eb;
+    margin-bottom: 6px;
+}
+#popup{
+    display:none;
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%, -50%);
+    background:white;
+    border-radius:8px;
+    box-shadow:0 4px 8px rgba(0,0,0,0.2);
+    padding:20px;
+    width:300px;
+    z-index:1000;
+}
+/* ============================= */
+/* 📦 PHẦN LOT HIỂN THỊ DƯỚI FORM */
+/* ============================= */
+.lot-section {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    padding: 20px 24px;
+    margin: 20px 40px;
+    width: 400px;
+    min-width: 320px;
+    max-height: 400px;
+    overflow-y: auto;
+    transition: all 0.3s ease;
+}
+
+.lot-section h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1e40af;
+    margin-bottom: 16px;
+    text-align: center;
+    border-bottom: 2px solid #93c5fd;
+    padding-bottom: 6px;
+}
+
+/* Bảng hiển thị Lot Detail */
+.lot-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    background: #f9fafb;
+}
+
+.lot-table th {
+    background: #2563eb;
+    color: white;
+    text-align: center;
+    padding: 8px;
+    font-weight: 600;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+
+.lot-table td {
+    border: 1px solid #e2e8f0;
+    padding: 8px;
+    text-align: center;
+    color: #334155;
+}
+
+.lot-table tr:nth-child(even) {
+    background-color: #f1f5f9;
+}
+
+.lot-table tr:hover {
+    background-color: #e0f2fe;
+    transition: background 0.2s;
+}
+
+.lot-table td:first-child {
+    font-weight: 600;
+    color: #1e293b;
+}
+
+/* Cuộn mượt cho bảng khi có nhiều dòng */
+.lot-section::-webkit-scrollbar {
+    width: 6px;
+}
+.lot-section::-webkit-scrollbar-thumb {
+    background: #93c5fd;
+    border-radius: 4px;
+}
+
+/* ============================= */
+/* Căn layout hai bên đẹp hơn     */
+/* ============================= */
+.container {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 40px;
+}
+
+/* Nút popup giữ nguyên nhưng làm đẹp nhẹ */
+#popup button:hover {
+    background: #1d4ed8;
+}
+
+/* ============================= */
+/*  STATUS LABELS TRONG LOT TABLE */
+/* ============================= */
+.status-active {
+    background: #bbf7d0; /* xanh lá nhạt */
+    color: #166534;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.status-inactive {
+    background: #f1f5f9; /* xám nhạt */
+    color: #475569;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.status-reserved {
+    background: #fde68a; /* vàng nhạt */
+    color: #92400e;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.status-unknown {
+    background: #e2e8f0;
+    color: #475569;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 13px;
+}
+

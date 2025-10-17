@@ -1,5 +1,6 @@
 package model;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Lot {
@@ -55,5 +56,19 @@ public class Lot {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+    // ✅ In ra thông tin đẹp hơn
+    @Override
+    public String toString() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String dateStr = (receivedDate != null) ? sdf.format(receivedDate) : "null";
+
+        return "Lot{" +
+                "lotId='" + lotId + '\'' +
+                ", supplierId='" + supplierId + '\'' +
+                ", lotCode='" + lotCode + '\'' +
+                ", receivedDate=" + dateStr +
+                ", description='" + description + '\'' +
+                '}';
     }
 }
