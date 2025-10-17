@@ -143,22 +143,50 @@ public class RackLotDAO extends DBContext {
         }
         return 0;
     }
+    // 8️⃣ Lấy danh sách LotID + Supplier + Quantity trong 1 rack
+    public List<Map<String, Object>> getLotInfoByRack(String rackId) {
+        String sql = """
+        SELECT 
+            l.lot_id,
+            l.supplier_id,
+            rl.quantity
+        FROM racklot rl
+        JOIN lotdetail ld ON rl.lotdetail_id = ld.lotdetail_id
+        JOIN lot l ON ld.lot_id = l.lot_id
+        WHERE rl.rack_id = ?
+    """;
 
+        List<Map<String, Object>> result = new ArrayList<>();
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, rackId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Map<String, Object> map = new HashMap<>();
+                map.put("lotId", rs.getString("lot_id"));
+                map.put("supplierId", rs.getString("supplier_id"));
+                map.put("quantity", rs.getInt("quantity"));
+                result.add(map);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
     // 🔍 Main test
     public static void main(String[] args) {
         RackLotDAO dao = new RackLotDAO();
 
-        System.out.println("=== Toàn bộ dữ liệu trong bảng RackLot ===");
-        List<RackLot> allRackLots = dao.getAllRackLots();
-        for (RackLot r : allRackLots) {
-            System.out.println("RackLotID: " + r.getRacklotId() +
-                    ", RackID: " + r.getRackId() +
-                    ", LotDetailID: " + r.getLotdetailId() +
-                    ", Quantity: " + r.getQuantity());
-        }
+//        System.out.println("=== Toàn bộ dữ liệu trong bảng RackLot ===");
+//        List<RackLot> allRackLots = dao.getAllRackLots();
+//        for (RackLot r : allRackLots) {
+//            System.out.println("RackLotID: " + r.getRacklotId() +
+//                    ", RackID: " + r.getRackId() +
+//                    ", LotDetailID: " + r.getLotdetailId() +
+//                    ", Quantity: " + r.getQuantity());
+//        }
 
         System.out.println("\n=== Kiểm tra chi tiết sản phẩm trong 1 rack ===");
-        String testRackId = "R001"; // 👉 thay bằng rackid có thật trong DB
+        String testRackId = "A001-01R1"; // 👉 thay bằng rackid có thật trong DB
         List<Map<String, Object>> productList = dao.getProductQuantitiesByRack(testRackId);
         for (Map<String, Object> p : productList) {
             System.out.println("Rack: " + testRackId +
@@ -171,5 +199,13 @@ public class RackLotDAO extends DBContext {
         System.out.println("\n=== Tổng số lượng trong rack " + testRackId + " ===");
         int total = dao.getTotalQuantityInRack(testRackId);
         System.out.println("Total quantity in rack " + testRackId + " = " + total);
+        System.out.println("\n=== Danh sách Lot trong rack ===");
+        List<Map<String, Object>> lotList = dao.getLotInfoByRack(testRackId);
+        for (Map<String, Object> lot : lotList) {
+            System.out.println("Rack: " + testRackId +
+                    " | LotID: " + lot.get("lotId") +
+                    " | Supplier: " + lot.get("supplierId") +
+                    " | Quantity: " + lot.get("quantity"));
+        }
     }
 }                            

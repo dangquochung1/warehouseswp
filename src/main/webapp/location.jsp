@@ -175,10 +175,33 @@
               else if (sum >= 50) colorClass = "orange";
               else colorClass = "yellow";
       %>
-      <div class="cell <%= colorClass %>">
+      <%
+        Map<String, List<Map<String, Object>>> lotInfoByRack =
+                (Map<String, List<Map<String, Object>>>) request.getAttribute("lotInfoByRack");
+        if (lotInfoByRack == null) {
+          lotInfoByRack = new HashMap<>();
+        }
+
+
+        List<Map<String, Object>> lotList = lotInfoByRack.get(r.getRackId());
+        StringBuilder lotInfoStr = new StringBuilder();
+
+        if (lotList != null && !lotList.isEmpty()) {
+          for (Map<String, Object> lot : lotList) {
+            lotInfoStr.append("LotID: ").append(lot.get("lotId"))
+                    .append(" - Supplier: ").append(lot.get("supplierId"))
+                    .append(" - Qty: ").append(lot.get("quantity"))
+                    .append("\n");
+          }
+        } else {
+          lotInfoStr.append("Không có dữ liệu");
+        }
+      %>
+      <div class="cell <%= colorClass %>" data-lots="<%= lotInfoStr.toString() %>">
         <div class="rack-name"><%= r.getRackId() %></div>
         <div class="capacity"><%= sum %> / 50</div>
       </div>
+
       <%
       } else {
       %>
@@ -196,5 +219,50 @@
     </div>
   </div>
 </div>
+<div id="popup" style="
+  display:none;
+  position:fixed;
+  top:50%;
+  left:50%;
+  transform:translate(-50%, -50%);
+  background:white;
+  border-radius:8px;
+  box-shadow:0 4px 8px rgba(0,0,0,0.2);
+  padding:20px;
+  width:300px;
+  z-index:1000;
+">
+  <h3 style="margin-bottom:10px;">Chi tiết Lot trong Rack</h3>
+  <pre id="popup-content" style="
+    white-space:pre-wrap;
+    font-size:14px;
+    color:#334155;
+  "></pre>
+  <button onclick="closePopup()" style="
+    background:#2563eb;
+    color:white;
+    border:none;
+    border-radius:6px;
+    padding:6px 12px;
+    cursor:pointer;
+  ">Đóng</button>
+</div>
+<script>
+  // Khi click vào rack -> hiện popup
+  document.querySelectorAll('.cell').forEach(cell => {
+    cell.addEventListener('click', () => {
+      const lots = cell.getAttribute('data-lots');
+      if (lots) {
+        document.getElementById('popup-content').innerText = lots;
+        document.getElementById('popup').style.display = 'block';
+      }
+    });
+  });
+
+  // Đóng popup
+  function closePopup() {
+    document.getElementById('popup').style.display = 'none';
+  }
+</script>
 </body>
 </html>

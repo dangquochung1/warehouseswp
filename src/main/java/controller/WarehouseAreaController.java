@@ -1,8 +1,5 @@
 package controller;
-import dal.WarehouseDAO;
-import dal.AreaDAO;
-import dal.AisleDAO;
-import dal.RackDAO;
+import dal.*;
 import jakarta.servlet.annotation.WebServlet;
 import model.Warehouse;
 import model.Area;
@@ -11,8 +8,10 @@ import model.Rack;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
 
 @WebServlet("/WarehouseAreaController")
 public class WarehouseAreaController extends HttpServlet {
@@ -87,6 +86,14 @@ public class WarehouseAreaController extends HttpServlet {
         }
         request.setAttribute("racks", racks);
 
+        RackLotDAO rackLotDAO = new RackLotDAO();
+        Map<String, List<Map<String, Object>>> lotInfoByRack = new HashMap<>();
+
+        for (Rack r : racks) {
+            lotInfoByRack.put(r.getRackId(), rackLotDAO.getLotInfoByRack(r.getRackId()));
+        }
+
+        request.setAttribute("lotInfoByRack", lotInfoByRack);
         // Gửi dữ liệu sang JSP
         request.setAttribute("selectedWarehouse", warehouseId);
         request.setAttribute("selectedArea", areaId);
