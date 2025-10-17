@@ -97,7 +97,7 @@ public class OutboundCreateOrderController extends HttpServlet {
             String[] productNames = request.getParameterValues("productName");
             String[] quantities = request.getParameterValues("quantity");
             String[] notes = request.getParameterValues("note");
-            String[] rackIds = request.getParameterValues("rackId");
+            String[] aisleIds = request.getParameterValues("aisleId");
             // Tạo Order object
             Orders order = new Orders();
             order.setType("outbound");
@@ -116,7 +116,7 @@ public class OutboundCreateOrderController extends HttpServlet {
                     detail.setProductId(productIds[i]);
                     detail.setQuantity_actual(Integer.parseInt(quantities[i]));
                     detail.setNote(notes != null && i < notes.length ? notes[i] : "");
-                    detail.setRackId(rackIds[i]);
+                    detail.setAisleId(aisleIds[i]);
                     orderDetails.add(detail);
                 }
             }

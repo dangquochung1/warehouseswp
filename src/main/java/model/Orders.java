@@ -2,8 +2,6 @@ package model;
 
 import java.util.Date;
 
-
-
 public class Orders extends OrderDetail {
     private String orderId;
     private String type;            // inbound | outbound | stocktaking

@@ -10,6 +10,7 @@ import java.util.List;
 
 import dal.OutboundDAO;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,6 +21,8 @@ import model.Orders;
  *
  * @author Admin
  */
+
+@WebServlet(name = "OutboundOrderdetailController", urlPatterns = {"/outboundorderdetail"})
 public class OutboundOrderdetailController extends HttpServlet {
    
     /** 
