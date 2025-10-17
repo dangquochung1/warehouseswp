@@ -22,6 +22,7 @@ public class LotDetailDAO extends DBContext {
                 l.setPurchasePrice(rs.getDouble("purchase_price"));
                 l.setQuantityTotal(rs.getInt("quantity_total"));
                 l.setQuantityRemaining(rs.getInt("quantity_remaining"));
+                l.setStatus(rs.getInt("status"));
                 list.add(l);
             }
 
@@ -90,6 +91,7 @@ public class LotDetailDAO extends DBContext {
                 l.setPurchasePrice(rs.getDouble("purchase_price"));
                 l.setQuantityTotal(rs.getInt("quantity_total"));
                 l.setQuantityRemaining(rs.getInt("quantity_remaining"));
+                l.setStatus(rs.getInt("status"));
                 return l;
             }
         } catch (SQLException e) {

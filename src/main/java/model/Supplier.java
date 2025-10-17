@@ -71,4 +71,16 @@ public class Supplier {
     public void setDescription(String description) {
         this.description = description;
     }
+    @Override
+    public String toString() {
+        return "Supplier{" +
+                "supplierId='" + supplierId + '\'' +
+                ", name='" + name + '\'' +
+                ", contactName='" + contactName + '\'' +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                ", address='" + address + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }

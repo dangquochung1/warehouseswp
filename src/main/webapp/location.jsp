@@ -3,108 +3,39 @@
 <html>
 <head>
   <title>Sơ đồ kho Laptop</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f7fa;
-      padding: 20px;
-      color: #0f172a;
-    }
-    .container {
-      display: flex;
-      justify-content: center;
-    }
-    h1 {
-      font-size: 22px;
-      margin-bottom: 20px;
-      padding:20px;
-      text-align: center;
-    }
-
-    form {
-      background: #fff;
-      border-radius: 6px;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-      margin-bottom: 20px;
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      flex-direction: column;
-      padding: 40px;
-      margin-right:80px;
-      margin-left:30px;
-    }
-
-    label { font-weight: 600; }
-    select {
-      padding: 6px 10px;
-      border-radius: 4px;
-      border: 1px solid #cbd5e1;
-      font-size: 14px;
-    }
-
-    :root {
-      --cell-gap: 8px;
-      --cell-width: 120px;
-      --cell-height: 80px;
-    }
-
-    .grid {
-      display: grid;
-      gap: var(--cell-gap);
-    }
-
-    .cell {
-      border: 1px solid #d0d6dd;
-      border-radius: 6px;
-      box-shadow: 0 1px 2px rgba(16,24,40,0.05);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.3s;
-    }
-
-    /* ✅ màu theo trạng thái */
-    .cell.green {
-      background: #bbf7d0; /* xanh lá nhạt */
-    }
-    .cell.yellow {
-      background: #fef9c3; /* vàng nhạt */
-    }
-    .cell.orange {
-      background: #fdba74; /* cam nhạt */
-    }
-
-    .rack-name {
-      font-size: 15px;
-      font-weight: 600;
-    }
-
-    .capacity {
-      font-size: 13px;
-      color: #475569;
-    }
-
-    .aisle-header {
-      font-weight: bold;
-      color: #2563eb;
-      margin-bottom: 6px;
-    }
-  </style>
+  <link rel="stylesheet" href="css/location.css">
 </head>
 <body>
 <h1>Sơ đồ kho Laptop</h1>
 <div class="container">
-
+  <div class="leftside">
   <%
+    // ************************************************
+    // Khối scriptlet LỌC VÀ CHUYỂN ĐỔI BỊ LOẠI BỎ
+    // Chỉ giữ lại các biến cần thiết cho phần filter
+    // ************************************************
     List<Warehouse> warehouses = (List<Warehouse>) request.getAttribute("warehouses");
     List<Area> areas = (List<Area>) request.getAttribute("areas");
     String selectedWarehouse = (String) request.getAttribute("selectedWarehouse");
     String selectedArea = (String) request.getAttribute("selectedArea");
+
+    // Khai báo các biến cấu trúc từ Controller (Giảm scriptlet đầu tiên)
+    List<Aisle> aisles = (List<Aisle>) request.getAttribute("aisles");
+    Map<String, List<Rack>> mapAisleToRacks = (Map<String, List<Rack>>) request.getAttribute("mapAisleToRacks");
+    Map<String, String> rackLotInfoFormatted = (Map<String, String>) request.getAttribute("rackLotInfoFormatted");
+
+    // Dùng biến int đã được Controller tính
+    int maxRows = (Integer) request.getAttribute("maxRows");
+    int cols = (Integer) request.getAttribute("cols");
+
+    // Khởi tạo an toàn (có thể dùng EL/JSTL nếu chuyển hết, nhưng tạm giữ để đảm bảo an toàn cho vòng lặp)
+    if (aisles == null) aisles = Collections.emptyList();
+    if (mapAisleToRacks == null) mapAisleToRacks = Collections.emptyMap();
+    if (rackLotInfoFormatted == null) rackLotInfoFormatted = Collections.emptyMap();
   %>
 
   <form action="WarehouseAreaController" method="get" id="filterForm">
+    <input type="hidden" name="lotId" value="<%= request.getParameter("lotId") != null ? request.getParameter("lotId") : "" %>">
     <label for="warehouse">Warehouse:</label>
     <select name="warehouse" id="warehouse" onchange="document.getElementById('filterForm').submit();">
       <%
@@ -129,28 +60,50 @@
       %>
     </select>
   </form>
-
   <%
-    List<Aisle> aisles = (List<Aisle>) request.getAttribute("aisles");
-    List<Rack> racks = (List<Rack>) request.getAttribute("racks");
+    Lot selectedLot = (Lot) request.getAttribute("selectedLot");
+    List<LotDetail> selectedLotDetails = (List<LotDetail>) request.getAttribute("selectedLotDetails");
+    Map<String, String> productMap = (Map<String, String>) request.getAttribute("productMap");
+  %>
 
-    if (aisles != null && racks != null) {
-
-      // Tạo map: aisleId -> list<Rack>
-      Map<String, List<Rack>> map = new LinkedHashMap<>();
-      int maxRows = 0;
-      for (Aisle a : aisles) {
-        List<Rack> listRacks = new ArrayList<>();
-        for (Rack r : racks) {
-          if (r.getAisleId() != null && r.getAisleId().equalsIgnoreCase(a.getAisleId())) {
-            listRacks.add(r);
+  <% if (selectedLot != null) { %>
+  <div class="lot-section">
+    <h3>Lot Code: <%= selectedLot.getLotCode() %></h3>
+    <table class="lot-table">
+      <tr>
+        <th>LotDetail ID</th>
+        <th>Product</th>
+        <th>Quantity Remaining</th>
+        <th>Status</th>
+      </tr>
+      <% if (selectedLotDetails != null && !selectedLotDetails.isEmpty()) {
+        for (LotDetail d : selectedLotDetails) { %>
+      <tr>
+        <td><%= d.getLotDetailId() %></td>
+        <td><%= productMap.getOrDefault(d.getProductId(), "(Không rõ)") %></td>
+        <td><%= d.getQuantityRemaining() %></td>
+        <%
+          int st = d.getStatus();
+          String statusLabel, statusClass;
+          switch (st) {
+            case 0:  statusLabel = "Inactive"; statusClass = "status-inactive"; break;
+            case 1:  statusLabel = "Active"; statusClass = "status-active"; break;
+            case 2:  statusLabel = "Reserved"; statusClass = "status-reserved"; break;
+            default: statusLabel = "Unknown"; statusClass = "status-unknown"; break;
           }
-        }
-        map.put(a.getAisleId(), listRacks);
-        if (listRacks.size() > maxRows) maxRows = listRacks.size();
-      }
-
-      int cols = aisles.size();
+        %>
+        <td><span class="<%= statusClass %>"><%= statusLabel %></span></td>
+      </tr>
+      <%  } } else { %>
+      <tr><td colspan="3" style="text-align:center;">Không có dữ liệu Lot Detail</td></tr>
+      <% } %>
+    </table>
+  </div>
+  <% } %>
+  </div>
+  <%
+    // Kiểm tra điều kiện chính để render lưới
+    if (!aisles.isEmpty()) {
   %>
 
   <div class="rightside">
@@ -166,7 +119,7 @@
         // Rows: racks
         for (int row = 0; row < maxRows; row++) {
           for (Aisle a : aisles) {
-            List<Rack> listRacks = map.get(a.getAisleId());
+            List<Rack> listRacks = mapAisleToRacks.get(a.getAisleId());
             if (listRacks != null && row < listRacks.size()) {
               Rack r = listRacks.get(row);
               int sum = r.getSum();
@@ -176,28 +129,13 @@
               else colorClass = "yellow";
       %>
       <%
-        Map<String, List<Map<String, Object>>> lotInfoByRack =
-                (Map<String, List<Map<String, Object>>>) request.getAttribute("lotInfoByRack");
-        if (lotInfoByRack == null) {
-          lotInfoByRack = new HashMap<>();
-        }
-
-
-        List<Map<String, Object>> lotList = lotInfoByRack.get(r.getRackId());
-        StringBuilder lotInfoStr = new StringBuilder();
-
-        if (lotList != null && !lotList.isEmpty()) {
-          for (Map<String, Object> lot : lotList) {
-            lotInfoStr.append("LotID: ").append(lot.get("lotId"))
-                    .append(" - Supplier: ").append(lot.get("supplierId"))
-                    .append(" - Qty: ").append(lot.get("quantity"))
-                    .append("\n");
-          }
-        } else {
-          lotInfoStr.append("Không có dữ liệu");
-        }
+        // ************************************************
+        // Khối scriptlet định dạng LotInfo BỊ LOẠI BỎ
+        // Thay bằng việc lấy chuỗi đã định dạng từ Controller
+        // ************************************************
+        String lotInfoStr = rackLotInfoFormatted.getOrDefault(r.getRackId(), "Lỗi dữ liệu.");
       %>
-      <div class="cell <%= colorClass %>" data-lots="<%= lotInfoStr.toString() %>">
+      <div class="cell <%= colorClass %>" data-lots="<%= lotInfoStr %>">
         <div class="rack-name"><%= r.getRackId() %></div>
         <div class="capacity"><%= sum %> / 50</div>
       </div>
@@ -219,19 +157,7 @@
     </div>
   </div>
 </div>
-<div id="popup" style="
-  display:none;
-  position:fixed;
-  top:50%;
-  left:50%;
-  transform:translate(-50%, -50%);
-  background:white;
-  border-radius:8px;
-  box-shadow:0 4px 8px rgba(0,0,0,0.2);
-  padding:20px;
-  width:300px;
-  z-index:1000;
-">
+<div id="popup" >
   <h3 style="margin-bottom:10px;">Chi tiết Lot trong Rack</h3>
   <pre id="popup-content" style="
     white-space:pre-wrap;
