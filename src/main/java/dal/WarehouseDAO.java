@@ -33,11 +33,10 @@ public class WarehouseDAO extends DBContext {
 
     public List<Product> getProductsByWarehouseId(String warehouseId) {
         List<Product> products = new ArrayList<>();
-        String sql = "SELECT DISTINCT p.productid, p.name AS productName, r.rackid AS rackid\n" +
+        String sql = "SELECT DISTINCT p.productid, p.name AS productName, r.aisleid AS aisleid\n" +
                 "FROM product p\n" +
                 "JOIN lotdetail ld ON p.productid = ld.product_id\n" +
                 "JOIN racklot rl ON rl.lotdetail_id = ld.lotdetail_id\n" +
-                "JOIN rack r ON r.rackid = rl.rack_id\n" +
                 "JOIN aisle a ON a.aisleid = r.aisleid\n" +
                 "JOIN area ar ON ar.areaid = a.areaid\n" +
                 "JOIN warehouse w ON w.warehouseid = ar.warehouseid\n" +
@@ -51,7 +50,7 @@ public class WarehouseDAO extends DBContext {
                 Product product = new Product();
                 product.setProductId(rs.getString("productid"));
                 product.setName(rs.getString("productName"));
-                product.setRackId(rs.getString("rackid"));
+                product.setAisleId(rs.getString("aisleid"));
                 products.add(product);
             }
 
