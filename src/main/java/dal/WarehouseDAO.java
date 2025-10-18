@@ -6,7 +6,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WarehouseDAO extends DBContext {
+public class WarehouseDAO extends DBContext{
 
     public List<Warehouse> getAllWarehouses() {
         List<Warehouse> warehouses = new ArrayList<>();
@@ -33,16 +33,19 @@ public class WarehouseDAO extends DBContext {
 
     public List<Product> getProductsByWarehouseId(String warehouseId) {
         List<Product> products = new ArrayList<>();
-        String sql = "SELECT DISTINCT p.productid, p.name AS productName, r.aisleid AS aisleid\n" +
+        // thêm giá thấp nhất và giá trung bình
+        String sql = "SELECT DISTINCT p.productid, p.name AS productName, p.avgprice as avgPrice, a.aisleid AS aisleId, a.name as aisleName, (select min(purchase_price) from lotdetail where product_id = p.productid) as lowestPrice \n" +
                 "FROM product p\n" +
                 "JOIN lotdetail ld ON p.productid = ld.product_id\n" +
                 "JOIN racklot rl ON rl.lotdetail_id = ld.lotdetail_id\n" +
+                "JOIN rack r ON r.rackid = rl.rack_id\n" +
                 "JOIN aisle a ON a.aisleid = r.aisleid\n" +
                 "JOIN area ar ON ar.areaid = a.areaid\n" +
                 "JOIN warehouse w ON w.warehouseid = ar.warehouseid\n" +
-                "WHERE w.warehouseid = ?;";
+                "WHERE w.warehouseid = ?\n";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
+
             ps.setString(1, warehouseId);
             ResultSet rs = ps.executeQuery();
 
@@ -50,15 +53,16 @@ public class WarehouseDAO extends DBContext {
                 Product product = new Product();
                 product.setProductId(rs.getString("productid"));
                 product.setName(rs.getString("productName"));
-                product.setAisleId(rs.getString("aisleid"));
+                product.setAisleId(rs.getString("aisleId"));
+                product.setAisleName(rs.getString("aisleName"));
+                product.setLowestPrice(rs.getDouble("lowestPrice"));
+                product.setAvgPrice(rs.getDouble("avgPrice"));
                 products.add(product);
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return products;
     }
-
 }

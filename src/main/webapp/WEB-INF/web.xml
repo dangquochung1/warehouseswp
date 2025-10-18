@@ -4126,14 +4126,8 @@
         <servlet-name>OutboundUpdateOrderController</servlet-name>
         <servlet-class>controller.outboundController.OutboundUpdateOrderController</servlet-class>
     </servlet>
-    <servlet-mapping>
-        <servlet-name>OutboundManagerController</servlet-name>
-        <url-pattern>/outboundmanager</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>OutboundOrderdetalController</servlet-name>
-        <url-pattern>/outboundorderdetail</url-pattern>
-    </servlet-mapping>
+
+
     <servlet-mapping>
         <servlet-name>OutboundCreateOrderController</servlet-name>
         <url-pattern>/outboundcreateorder</url-pattern>

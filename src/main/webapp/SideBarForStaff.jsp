@@ -279,7 +279,7 @@
                                         <li class="submenu">
                                             <a href="javascript:void(0);"><img src="assets/img/icons/product.svg" alt="img"><span> Outbound For Staff</span> <span class="menu-arrow"></span></a>
                                             <ul>
-                                                <li><a href="#" class="active">List Outbound Order </a></li>
+                                                <li><a href="outboundstafforderlist" class="active">List Outbound Order </a></li>
                                                 <li><a href="#">Calendar</a></li>
                                             </ul>
                                         </li>

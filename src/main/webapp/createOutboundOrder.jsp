@@ -195,10 +195,7 @@
     </header>
 
     <div class="main-content">
-        <aside class="sidebar">
-            <div class="sidebar-item">Dashboard</div>
-            <div class="sidebar-item active">Create outbound order</div>
-        </aside>
+
 
         <section class="content-area">
             <div class="create-order-container">
@@ -277,7 +274,7 @@
                     </div>
 
                     <div class="form-actions">
-                        <button type="button" class="btn-cancel" onclick="window.location.href='outbounddashboard'">Cancel</button>
+                        <button type="button" class="btn-cancel" onclick="window.location.href='outboundmanager'">Cancel</button>
                         <button type="submit" class="btn-submit">Create Outbound Order</button>
                     </div>
                 </form>
@@ -359,7 +356,7 @@
                     '<option value="">--Select--</option>' +
                     productOptions +
                     '</select>' +
-                    '<input type="hidden" name="aisleId">' + // ✅ thêm dòng này
+                    '<input type="hidden" name="aisleId">' + //
                     '</td>' +
                     '<td><input type="text" name="productName" readonly style="width:95%;padding:5px;"></td>' +
                     '<td><input type="text" name="aisleName" readonly style="width:90%;padding:5px;"></td>' +

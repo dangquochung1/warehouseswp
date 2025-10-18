@@ -63,7 +63,7 @@ public class OutboundCreateOrderController extends HttpServlet {
             request.setAttribute("currentDate", currentDate);
 
             // Forward to JSP
-            request.getRequestDispatcher("OutboundCreateOrder.jsp").forward(request, response);
+            request.getRequestDispatcher("createOutboundOrder.jsp").forward(request, response);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -105,7 +105,7 @@ public class OutboundCreateOrderController extends HttpServlet {
             order.setAssignedTo(responsibleStaff);
             order.setScheduledDate(java.sql.Date.valueOf(orderDate));
             order.setStatus("pending");
-            order.setNote("Created from web interface");
+            order.setNote("...");
 
             // Tạo danh sách OrderDetail
             List<OrderDetail> orderDetails = new ArrayList<>();
@@ -114,7 +114,7 @@ public class OutboundCreateOrderController extends HttpServlet {
                 for (int i = 0; i < productIds.length; i++) {
                     OrderDetail detail = new OrderDetail();
                     detail.setProductId(productIds[i]);
-                    detail.setQuantity_actual(Integer.parseInt(quantities[i]));
+                    detail.setQuantity_expected(Integer.parseInt(quantities[i]));
                     detail.setNote(notes != null && i < notes.length ? notes[i] : "");
                     detail.setAisleId(aisleIds[i]);
                     orderDetails.add(detail);
