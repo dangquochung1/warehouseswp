@@ -19,7 +19,8 @@
         <section class="info-grid-form" style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom:20px;">
             <div><strong>Outbound Order ID:</strong> ${obdetail.orderId}</div>
             <div><strong>Create By:</strong> ${obdetail.createdBy}</div>
-            <div><strong>Location:</strong> ...</div>
+            <div><strong>Location:</strong> ${obdetail.location}</div>
+            <div><strong>Aisle:</strong> ${obdetail.aisle}</div>
             <div><strong>Order Date:</strong> ${obdetail.createdAt}</div>
             <div><strong>Responsible staff:</strong> ${obdetail.assignedTo}</div>
             <div><strong>Expected ship date:</strong> ${obdetail.scheduledDate}</div>
@@ -36,16 +37,20 @@
                             <th style="padding:8px; border:1px solid #ccc;">Stt</th>
                             <th style="padding:8px; border:1px solid #ccc;">Product name</th>
                             <th style="padding:8px; border:1px solid #ccc;">Quantity</th>
+                            <th style="padding:8px; border:1px solid #ccc;">Price</th>
+                            <th style="padding:8px; border:1px solid #ccc;">AvgPrice</th>
                             <th style="padding:8px; border:1px solid #ccc;">Note</th>
                         </tr>
                     </thead>
                     <tbody>
-                    <c:forEach var="pod" items="${productOrderdetail}">
+                    <c:forEach var="pod" items="${productlist}" varStatus="loop">
                         <tr>
-                            <td style="padding:8px; border:1px solid #ccc;">...</td>
-                            <td style="padding:8px; border:1px solid #ccc;">${pod.productNamebyId}</td>
-                            <td style="padding:8px; border:1px solid #ccc;">${pod.quantity_actual}</td>
-                            <td style="padding:8px; border:1px solid #ccc;">${pod.note}</td>
+                                        <td style="padding:8px; border:1px solid #ccc;">${loop.count}</td>
+                                        <td style="padding:8px; border:1px solid #ccc;">${pod.name}</td>
+                                        <td style="padding:8px; border:1px solid #ccc;">${pod.quantity_expected}</td>
+                                        <td style="padding:8px; border:1px solid #ccc;">${pod.lowestPrice}</td>
+                                        <td style="padding:8px; border:1px solid #ccc;">${pod.avgPrice}</td>
+                                        <td style="padding:8px; border:1px solid #ccc;">${pod.note}</td>
                         </tr>
                     </c:forEach>
                     </tbody>

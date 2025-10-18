@@ -2,15 +2,18 @@ package dal;
 
 import model.Orders;
 import model.OrderDetail;
+import model.Product;
+
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class OrderDAO extends DBContext {
-
+    Connection conn = connection;
+    PreparedStatement psOrder = null;
+    PreparedStatement psDetail = null;
     public boolean createOutboundOrder(Orders order, List<OrderDetail> details) {
-        Connection conn = connection;
-        PreparedStatement psOrder = null;
-        PreparedStatement psDetail = null;
+
 
         try {
 
@@ -76,7 +79,6 @@ public class OrderDAO extends DBContext {
                 if (psOrder != null) psOrder.close();
                 if (conn != null) {
                     conn.setAutoCommit(true);
-                    conn.close();
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -98,5 +100,66 @@ public class OrderDAO extends DBContext {
                 return "O001";
             }
         }
+    }
+    public boolean updateOrderStatus(String orderId, String newStatus) {
+
+
+        String sql = "UPDATE orders SET status = ? WHERE order_id = ?";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, newStatus);
+            ps.setString(2, orderId);
+            int rows = ps.executeUpdate();
+            return rows > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    public List<Product> getProductsByOrderId(String odid) {
+        List<Product> products = new ArrayList<>();
+
+        String sql = "SELECT DISTINCT " +
+                "p.productid, " +
+                "p.name AS productName, " +
+                "p.avgprice AS avgPrice, " +
+                "a.aisleid AS aisleId, " +
+                "a.name AS aisleName, " +
+                "od.quantity_expected, " +
+                "(" +
+                "    SELECT MIN(ld2.purchase_price)" +
+                "    FROM lotdetail ld2" +
+                "    WHERE ld2.product_id = p.productid" +
+                ") AS lowestPrice " +
+                "FROM orderdetail od " +
+                "JOIN product p ON od.product_id = p.productid " +
+                "LEFT JOIN lotdetail ld ON p.productid = ld.product_id " +
+                "LEFT JOIN racklot rl ON rl.lotdetail_id = ld.lotdetail_id " +
+                "LEFT JOIN rack r ON r.rackid = rl.rack_id " +
+                "LEFT JOIN aisle a ON a.aisleid = r.aisleid " +
+                "WHERE od.order_id = ?";
+
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setString(1, odid);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Product product = new Product();
+                product.setProductId(rs.getString("productid"));
+                product.setName(rs.getString("productName"));
+                product.setAisleId(rs.getString("aisleId"));
+                product.setAisleName(rs.getString("aisleName"));
+                product.setLowestPrice(rs.getDouble("lowestPrice"));
+                product.setAvgPrice(rs.getDouble("avgPrice"));
+                product.setQuantity_expected(rs.getInt("quantity_expected"));
+                products.add(product);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return products;
     }
 }

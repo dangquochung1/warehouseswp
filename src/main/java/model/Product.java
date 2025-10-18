@@ -11,6 +11,8 @@ public class Product {
     private String aisleId;
     private String aisleName;
     private double lowestPrice;
+    private int quantity_expected;
+    private String note;
 
     public Product() {}
 
@@ -86,6 +88,13 @@ public class Product {
     public double getLowestPrice() {
         return lowestPrice;
     }
+    public int getQuantity_expected() {
+        return quantity_expected;
+    }
+
+    public void setQuantity_expected(int quantity_expected) {
+        this.quantity_expected = quantity_expected;
+    }
 
     public void setLowestPrice(double lowestPrice) {
         this.lowestPrice = lowestPrice;
@@ -97,5 +106,12 @@ public class Product {
 
     public void setAisleName(String aisleName) {
         this.aisleName = aisleName;
+    }
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 }

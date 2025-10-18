@@ -3,6 +3,7 @@ package controller.outboundController;
 import java.io.IOException;
 import java.util.List;
 
+import dal.OrderDAO;
 import dal.OutboundDAO;
 import dal.OutboundStaffDAO;
 import jakarta.servlet.ServletException;
@@ -27,9 +28,31 @@ public class OutboundStaffUpdateStatusController extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
 
-        String od_id = request.getParameter("odid");
-        String status = request.getParameter("action");
+        String orderId = request.getParameter("odid");
+        String action = request.getParameter("action");
+        String newStatus = null;
 
+        if ("processing".equalsIgnoreCase(action)) {
+            newStatus = "processing";
+        } else if ("complete".equalsIgnoreCase(action)) {
+            newStatus = "done";
+        } else if ("cancel".equalsIgnoreCase(action)) {
+            newStatus = "cancelled";
+        }
+
+        if (newStatus == null) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid action parameter");
+            return;
+        }
+
+        OrderDAO orderDAO = new OrderDAO();
+        boolean success = orderDAO.updateOrderStatus(orderId, newStatus);
+
+        if (success) {
+            response.sendRedirect(request.getContextPath() + "/outboundstafforderlist");
+        } else {
+            response.getWriter().println("Không thể cập nhật trạng thái đơn hàng.");
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

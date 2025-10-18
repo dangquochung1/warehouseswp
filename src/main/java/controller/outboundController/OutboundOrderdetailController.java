@@ -8,6 +8,7 @@ package controller.outboundController;
 import java.io.IOException;
 import java.util.List;
 
+import dal.OrderDAO;
 import dal.OutboundDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -16,6 +17,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.OrderDetail;
 import model.Orders;
+import model.Product;
 
 /**
  *
@@ -37,13 +39,15 @@ public class OutboundOrderdetailController extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
 
         OutboundDAO obdao = new OutboundDAO();
-
+        OrderDAO odao = new OrderDAO();
         String od_id = request.getParameter("odid");
 
         List<Orders> orderDetail = obdao.getOutboundOrderByID(od_id);
         List<OrderDetail>  productOrderdetail = obdao.getOutboundOrderdetailByOrderID(od_id);
+        List<Product> productList = odao.getProductsByOrderId(od_id);
 
-        request.setAttribute("productOrderdetail", productOrderdetail);
+
+        request.setAttribute("productlist", productList);
         request.setAttribute("orderdetail", orderDetail);
         request.getRequestDispatcher("OutboundOrderDetail.jsp").forward(request, response);
     }

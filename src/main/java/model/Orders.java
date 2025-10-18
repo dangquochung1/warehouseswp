@@ -12,13 +12,14 @@ public class Orders extends OrderDetail {
     private String scheduleId;
     private String status;          // pending | processing | done | cancelled
     private String note;
+    private String location;
+    private String aisle;
 
     public Orders() {
     }
 
     public Orders(String orderdetailId, String orderId, String productId, int quantityExpected, int quantityActual, float price, String note) {
     }
-//    public Orders(String string, String rsString, String s, String string1, String rsString1, String s1, String string2, String rsString2, String s2) {}
 
     public Orders(String orderId, String type, String createdBy, String assignedTo,
                   java.sql.Date createdAt, java.sql.Date scheduledDate,
@@ -34,9 +35,21 @@ public class Orders extends OrderDetail {
         this.note = note;
     }
 
+    public String getAisle() {
+        return aisle;
+    }
 
+    public void setAisle(String aisle) {
+        this.aisle = aisle;
+    }
 
+    public String getLocation() {
+        return location;
+    }
 
+    public void setLocation(String location) {
+        this.location = location;
+    }
 
     public String getOrderId() {
         return orderId;

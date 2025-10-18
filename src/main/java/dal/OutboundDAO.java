@@ -87,13 +87,42 @@ public class OutboundDAO {
     }
     public List<Orders> getOutboundOrderByID(String od_id) {
         List<Orders> list = new ArrayList<>();
-        String query = "SELECT * FROM orders WHERE type = 'outbound' AND order_id = ?";
+
+        // ✅ Tùy chỉnh truy vấn SQL:
+        // 1. Thêm DISTINCT và CAST(o.note AS NVARCHAR(MAX)) để khắc phục lỗi SQL.
+        // 2. Sử dụng JOIN hợp lý nhất theo cấu trúc dữ liệu thực tế (dựa vào aisleid trong orderdetail)
+        //    Tuy nhiên, tôi giữ nguyên JOIN đầy đủ như bạn cung cấp ban đầu để đảm bảo tính bao quát,
+        //    nhưng bạn nên dùng truy vấn thứ 2 đã hoạt động nếu dữ liệu vị trí là NULL.
+        String query = """
+                SELECT DISTINCT
+                    o.order_id,\s
+                    o.type,\s
+                    o.created_by,\s
+                    o.assigned_to,\s
+                    o.created_at,\s
+                    o.scheduled_date,\s
+                    o.schedule_id,\s
+                    o.status,\s
+                    CAST(o.note AS NVARCHAR(MAX)) AS note, \s
+                    w.name AS warehouse_name,             \s
+                    a.name AS aisle_name                \s
+                FROM orders o
+                LEFT JOIN orderdetail od ON o.order_id = od.order_id
+                LEFT JOIN aisle a ON od.aisleid = a.aisleid\s
+                LEFT JOIN area ar ON a.areaid = ar.areaid
+                LEFT JOIN warehouse w ON ar.warehouseid = w.warehouseid
+                WHERE o.type = 'outbound' AND o.order_id = ?
+""";
+
         try (Connection conn = getSafeConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
+
             ps.setString(1, od_id);
+
             try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    list.add(new Orders(
+
+                if (rs.next()) {
+                    Orders order = new Orders(
                             rs.getString("order_id"),
                             rs.getString("type"),
                             rs.getString("created_by"),
@@ -103,14 +132,22 @@ public class OutboundDAO {
                             rs.getString("schedule_id"),
                             rs.getString("status"),
                             rs.getString("note")
-                    ));
+                    );
+
+                    order.setLocation(rs.getString("warehouse_name"));
+                    order.setAisle(rs.getString("aisle_name"));
+
+                    list.add(order);
                 }
             }
         } catch (Exception e) {
+            // Nên dùng SQLException và logger thay vì in stack trace trực tiếp
             e.printStackTrace();
         }
+
         return list;
     }
+
     public List<OrderDetail> getOutboundOrderdetailByOrderID(String od_id) {
         List<OrderDetail> list = new ArrayList<>();
         String query = "SELECT \n" +
