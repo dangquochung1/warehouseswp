@@ -42,7 +42,7 @@ public class RackLotController extends HttpServlet {
                 throw new Exception("Thiếu tham số lotId hoặc lotDetailId");
             }
 
-            res.sendRedirect("success.jsp");
+            res.sendRedirect("WarehouseAreaController");
         } catch (Exception e) {
             e.printStackTrace();
             res.getWriter().println("Error: " + e.getMessage());

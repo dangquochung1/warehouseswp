@@ -16,6 +16,7 @@
             window.location.href = "location.jsp";
         }
     </script>
+
 </head>
 
 <body>
@@ -58,9 +59,9 @@
                 Arrange All
             </button>
         </td>
-
     </tr>
 
+    <!-- Bảng chi tiết Lot -->
     <tr id="detail-<%= l.getLotId() %>" class="detail-row">
         <td colspan="6">
             <div class="detail-container">
@@ -71,31 +72,36 @@
                         <th>Product</th>
                         <th>Purchase Price</th>
                         <th>Quantity Total</th>
-                        <th>Quantity Remaining</th>
-                        <th>Status</th>
+                        <th>Unarranged Remaining</th>
+                        <th>Arrange Status</th>
+                        <th>Remaining</th>
                     </tr>
                     <%
                         List<LotDetail> details = lotDetailsMap != null ? lotDetailsMap.get(l.getLotId()) : null;
                         if (details != null && !details.isEmpty()) {
                             for (LotDetail d : details) {
-                                int status = d.getQuantityRemaining(); // 0 = pending, 1 = done
-                                String statusClass = status == 0 ? "done" : "pending";
-                                String statusText = status == 0 ? "Done" : "Pending";
+                                int unarranged = d.getUnarrangedRemaining();
+                                int remaining = d.getRemaining();
+
+                                // UnarrangedRemaining = 0 → Done
+                                String statusClass = unarranged == 0 ? "done" : "pending";
+                                String statusText = unarranged == 0 ? "Done" : "Pending";
                     %>
                     <tr>
                         <td><%= d.getLotDetailId() %></td>
                         <td><%= productMap.getOrDefault(d.getProductId(), "(Không rõ)") %></td>
-                        <td><%= d.getPurchasePrice() %></td>
+                        <td><%= String.format("%,.2f", d.getPurchasePrice()) %></td>
                         <td><%= d.getQuantityTotal() %></td>
-                        <td><%= d.getQuantityRemaining() %></td>
+                        <td><%= unarranged %></td>
                         <td><span class="status <%= statusClass %>"><%= statusText %></span></td>
+                        <td><%= remaining %></td>
                     </tr>
 
                     <%
                         }
                     } else {
                     %>
-                    <tr><td colspan="6" style="text-align:center;">Không có dữ liệu chi tiết</td></tr>
+                    <tr><td colspan="7" style="text-align:center;">Không có dữ liệu chi tiết</td></tr>
                     <% } %>
                 </table>
             </div>

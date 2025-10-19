@@ -81,15 +81,13 @@
         <tr>
           <td><%= d.getLotDetailId() %></td>
           <td><%= productMap.getOrDefault(d.getProductId(), "(Không rõ)") %></td>
-          <td><%= d.getQuantityRemaining() %></td>
+          <td><%= d.getRemaining() %></td>
           <%
-            int st = d.getStatus();
+            int st = d.getUnarrangedRemaining();
             String statusLabel, statusClass;
             switch (st) {
-              case 0:  statusLabel = "Inactive"; statusClass = "status-inactive"; break;
-              case 1:  statusLabel = "Active"; statusClass = "status-active"; break;
-              case 2:  statusLabel = "Reserved"; statusClass = "status-reserved"; break;
-              default: statusLabel = "Unknown"; statusClass = "status-unknown"; break;
+              case 0:  statusLabel = "Done"; statusClass = "status-inactive"; break;
+              default: statusLabel = "Pending"; statusClass = "status-unknown"; break;
             }
           %>
           <td><span class="<%= statusClass %>"><%= statusLabel %></span></td>

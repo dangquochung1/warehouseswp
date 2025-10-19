@@ -6,19 +6,19 @@ public class LotDetail {
     private String productId;
     private double purchasePrice;
     private int quantityTotal;
-    private int quantityRemaining;
-    private int status;
+    private int remaining;              // cột mới: thay cho status
+    private int unarrangedRemaining;    // cột mới: thay cho quantityRemaining
 
     public LotDetail() {}
 
-    public LotDetail(String lotDetailId, String lotId, String productId, double purchasePrice, int quantityTotal, int quantityRemaining, int status) {
+    public LotDetail(String lotDetailId, String lotId, String productId, double purchasePrice, int quantityTotal, int remaining, int unarrangedRemaining) {
         this.lotDetailId = lotDetailId;
         this.lotId = lotId;
         this.productId = productId;
         this.purchasePrice = purchasePrice;
         this.quantityTotal = quantityTotal;
-        this.quantityRemaining = quantityRemaining;
-        this.status = status;
+        this.remaining = remaining;
+        this.unarrangedRemaining = unarrangedRemaining;
     }
 
     public LotDetail(String lotDetailId, String lotId, String productId) {
@@ -67,20 +67,20 @@ public class LotDetail {
         this.quantityTotal = quantityTotal;
     }
 
-    public int getQuantityRemaining() {
-        return quantityRemaining;
+    public int getRemaining() {
+        return remaining;
     }
 
-    public void setQuantityRemaining(int quantityRemaining) {
-        this.quantityRemaining = quantityRemaining;
+    public void setRemaining(int remaining) {
+        this.remaining = remaining;
     }
 
-    public int getStatus() {
-        return status;
+    public int getUnarrangedRemaining() {
+        return unarrangedRemaining;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
+    public void setUnarrangedRemaining(int unarrangedRemaining) {
+        this.unarrangedRemaining = unarrangedRemaining;
     }
 
     @Override
@@ -91,8 +91,8 @@ public class LotDetail {
                 ", productId='" + productId + '\'' +
                 ", purchasePrice=" + purchasePrice +
                 ", quantityTotal=" + quantityTotal +
-                ", quantityRemaining=" + quantityRemaining +
-                ", status=" + status +
+                ", remaining=" + remaining +
+                ", unarrangedRemaining=" + unarrangedRemaining +
                 '}';
     }
 }

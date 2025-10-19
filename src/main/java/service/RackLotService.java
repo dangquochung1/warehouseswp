@@ -37,7 +37,7 @@ public class RackLotService {
         }
 
         LotDetail addLot(LotDetail lot) {
-            int qty = lot.getQuantityRemaining();
+            int qty = lot.getUnarrangedRemaining(); // ⚙️ dùng cột mới
 
             if (canAdd(qty)) {
                 lots.add(new LotDetail(
@@ -45,12 +45,12 @@ public class RackLotService {
                         lot.getLotId(),
                         lot.getProductId(),
                         lot.getPurchasePrice(),
-                        0, // quantityTotal bỏ qua
-                        qty,
-                        lot.getStatus()
+                        0,
+                        lot.getRemaining(),           // trạng thái
+                        qty
                 ));
                 currentQuantity += qty;
-                return null; // hết hàng
+                return null;
             } else {
                 int canTake = 50 - currentQuantity;
                 lots.add(new LotDetail(
@@ -59,12 +59,11 @@ public class RackLotService {
                         lot.getProductId(),
                         lot.getPurchasePrice(),
                         0,
-                        canTake,
-                        lot.getStatus()
+                        lot.getRemaining(),
+                        canTake
                 ));
                 currentQuantity = 50;
 
-                // còn dư
                 int remain = qty - canTake;
                 return new LotDetail(
                         lot.getLotDetailId(),
@@ -72,21 +71,20 @@ public class RackLotService {
                         lot.getProductId(),
                         lot.getPurchasePrice(),
                         0,
-                        remain,
-                        lot.getStatus()
+                        lot.getRemaining(),
+                        remain
                 );
             }
         }
     }
 
-    // 🧠 Hàm chính phân bổ LotDetail vào rack
+    // 🧠 Phân bổ LotDetail vào rack
     public void autoDistribute(String warehouseId, String lotDetailId) throws Exception {
         LotDetail lotDetail = lotDetailDAO.getLotDetailById(lotDetailId);
         if (lotDetail == null) {
             throw new Exception("Không tìm thấy LotDetail: " + lotDetailId);
         }
 
-        // Lấy danh sách rack hiện tại của kho
         List<Rack> racks = rackDAO.getRacksByWarehouseId(warehouseId);
         List<TempRack> tempRacks = new ArrayList<>();
         for (Rack r : racks) {
@@ -94,7 +92,7 @@ public class RackLotService {
         }
 
         LotDetail current = lotDetail;
-        while (current != null && current.getQuantityRemaining() > 0) {
+        while (current != null && current.getUnarrangedRemaining() > 0) {
             boolean placed = false;
 
             for (TempRack rack : tempRacks) {
@@ -110,7 +108,7 @@ public class RackLotService {
             }
 
             // Không rack nào chứa được → tạo mới
-            if (!placed && current != null && current.getQuantityRemaining() > 0) {
+            if (!placed && current != null && current.getUnarrangedRemaining() > 0) {
                 String newRackId = createNewRack(warehouseId);
                 TempRack newRack = new TempRack(newRackId, 0);
                 tempRacks.add(newRack);
@@ -125,18 +123,17 @@ public class RackLotService {
                 rl.setRacklotId(rackLotDAO.getNextRacklotId());
                 rl.setRackId(rack.rackId);
                 rl.setLotdetailId(ld.getLotDetailId());
-                rl.setQuantity(ld.getQuantityRemaining());
+                rl.setQuantity(ld.getUnarrangedRemaining()); // ⚙️ cột mới
                 rackLotDAO.insertRackLot(rl);
             }
         }
 
-        // Cập nhật lotdetail còn lại = 0 (đã phân hết)
-        lotDetail.setQuantityRemaining(0);
+        // Cập nhật lại lotdetail sau khi phân xong
+        lotDetail.setUnarrangedRemaining(0); // đã sắp hết
         lotDetailDAO.updateLotDetail(lotDetail);
     }
 
     private String createNewRack(String warehouseId) {
-        // TODO: thêm rack thật vào DB (tạm thời sinh ID)
         return "TEMP-" + System.currentTimeMillis();
     }
 }

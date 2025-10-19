@@ -21,8 +21,8 @@ public class LotDetailDAO extends DBContext {
                 l.setProductId(rs.getString("product_id"));
                 l.setPurchasePrice(rs.getDouble("purchase_price"));
                 l.setQuantityTotal(rs.getInt("quantity_total"));
-                l.setQuantityRemaining(rs.getInt("quantity_remaining"));
-                l.setStatus(rs.getInt("status"));
+                l.setRemaining(rs.getInt("remaining")); // status cũ → remaining
+                l.setUnarrangedRemaining(rs.getInt("unarranged_remaining")); // quantityRemaining cũ
                 list.add(l);
             }
 
@@ -46,7 +46,8 @@ public class LotDetailDAO extends DBContext {
                 l.setProductId(rs.getString("product_id"));
                 l.setPurchasePrice(rs.getDouble("purchase_price"));
                 l.setQuantityTotal(rs.getInt("quantity_total"));
-                l.setQuantityRemaining(rs.getInt("quantity_remaining"));
+                l.setRemaining(rs.getInt("remaining"));
+                l.setUnarrangedRemaining(rs.getInt("unarranged_remaining"));
                 list.add(l);
             }
         } catch (SQLException e) {
@@ -59,8 +60,8 @@ public class LotDetailDAO extends DBContext {
     public int insertLotDetail(LotDetail l) {
         String sql = """
             INSERT INTO [dbo].[lotdetail]
-            (lotdetail_id, lot_id, product_id, purchase_price, quantity_total, quantity_remaining)
-            VALUES (?, ?, ?, ?, ?, ?)
+            (lotdetail_id, lot_id, product_id, purchase_price, quantity_total, remaining, unarranged_remaining)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
             """;
         int n = 0;
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -69,7 +70,8 @@ public class LotDetailDAO extends DBContext {
             ps.setString(3, l.getProductId());
             ps.setDouble(4, l.getPurchasePrice());
             ps.setInt(5, l.getQuantityTotal());
-            ps.setInt(6, l.getQuantityRemaining());
+            ps.setInt(6, l.getRemaining());
+            ps.setInt(7, l.getUnarrangedRemaining());
             n = ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -90,8 +92,8 @@ public class LotDetailDAO extends DBContext {
                 l.setProductId(rs.getString("product_id"));
                 l.setPurchasePrice(rs.getDouble("purchase_price"));
                 l.setQuantityTotal(rs.getInt("quantity_total"));
-                l.setQuantityRemaining(rs.getInt("quantity_remaining"));
-                l.setStatus(rs.getInt("status"));
+                l.setRemaining(rs.getInt("remaining"));
+                l.setUnarrangedRemaining(rs.getInt("unarranged_remaining"));
                 return l;
             }
         } catch (SQLException e) {
@@ -104,7 +106,8 @@ public class LotDetailDAO extends DBContext {
     public void updateLotDetail(LotDetail l) {
         String sql = """
             UPDATE [dbo].[lotdetail]
-            SET lot_id = ?, product_id = ?, purchase_price = ?, quantity_total = ?, quantity_remaining = ?
+            SET lot_id = ?, product_id = ?, purchase_price = ?, quantity_total = ?, 
+                remaining = ?, unarranged_remaining = ?
             WHERE lotdetail_id = ?
             """;
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -112,8 +115,9 @@ public class LotDetailDAO extends DBContext {
             ps.setString(2, l.getProductId());
             ps.setDouble(3, l.getPurchasePrice());
             ps.setInt(4, l.getQuantityTotal());
-            ps.setInt(5, l.getQuantityRemaining());
-            ps.setString(6, l.getLotDetailId());
+            ps.setInt(5, l.getRemaining());
+            ps.setInt(6, l.getUnarrangedRemaining());
+            ps.setString(7, l.getLotDetailId());
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -133,11 +137,11 @@ public class LotDetailDAO extends DBContext {
         return n;
     }
 
-    // 7️⃣ Giảm số lượng còn lại
-    public void decreaseRemainingQuantity(String lotDetailId, int amount) {
+    // 7️⃣ Giảm số lượng unarranged_remaining
+    public void decreaseUnarrangedRemaining(String lotDetailId, int amount) {
         String sql = """
             UPDATE [dbo].[lotdetail]
-            SET quantity_remaining = quantity_remaining - ?
+            SET unarranged_remaining = unarranged_remaining - ?
             WHERE lotdetail_id = ?
             """;
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
