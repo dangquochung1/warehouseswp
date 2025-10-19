@@ -9,97 +9,97 @@
 <h1>Sơ đồ kho Laptop</h1>
 <div class="container">
   <div class="leftside">
-  <%
-    // ************************************************
-    // Khối scriptlet LỌC VÀ CHUYỂN ĐỔI BỊ LOẠI BỎ
-    // Chỉ giữ lại các biến cần thiết cho phần filter
-    // ************************************************
-    List<Warehouse> warehouses = (List<Warehouse>) request.getAttribute("warehouses");
-    List<Area> areas = (List<Area>) request.getAttribute("areas");
-    String selectedWarehouse = (String) request.getAttribute("selectedWarehouse");
-    String selectedArea = (String) request.getAttribute("selectedArea");
+    <%
+      // ************************************************
+      // Khối scriptlet LỌC VÀ CHUYỂN ĐỔI BỊ LOẠI BỎ
+      // Chỉ giữ lại các biến cần thiết cho phần filter
+      // ************************************************
+      List<Warehouse> warehouses = (List<Warehouse>) request.getAttribute("warehouses");
+      List<Area> areas = (List<Area>) request.getAttribute("areas");
+      String selectedWarehouse = (String) request.getAttribute("selectedWarehouse");
+      String selectedArea = (String) request.getAttribute("selectedArea");
 
-    // Khai báo các biến cấu trúc từ Controller (Giảm scriptlet đầu tiên)
-    List<Aisle> aisles = (List<Aisle>) request.getAttribute("aisles");
-    Map<String, List<Rack>> mapAisleToRacks = (Map<String, List<Rack>>) request.getAttribute("mapAisleToRacks");
-    Map<String, String> rackLotInfoFormatted = (Map<String, String>) request.getAttribute("rackLotInfoFormatted");
+      // Khai báo các biến cấu trúc từ Controller (Giảm scriptlet đầu tiên)
+      List<Aisle> aisles = (List<Aisle>) request.getAttribute("aisles");
+      Map<String, List<Rack>> mapAisleToRacks = (Map<String, List<Rack>>) request.getAttribute("mapAisleToRacks");
+      Map<String, String> rackLotInfoFormatted = (Map<String, String>) request.getAttribute("rackLotInfoFormatted");
 
-    // Dùng biến int đã được Controller tính
-    int maxRows = (Integer) request.getAttribute("maxRows");
-    int cols = (Integer) request.getAttribute("cols");
+      // Dùng biến int đã được Controller tính
+      int maxRows = (Integer) request.getAttribute("maxRows");
+      int cols = (Integer) request.getAttribute("cols");
 
-    // Khởi tạo an toàn (có thể dùng EL/JSTL nếu chuyển hết, nhưng tạm giữ để đảm bảo an toàn cho vòng lặp)
-    if (aisles == null) aisles = Collections.emptyList();
-    if (mapAisleToRacks == null) mapAisleToRacks = Collections.emptyMap();
-    if (rackLotInfoFormatted == null) rackLotInfoFormatted = Collections.emptyMap();
-  %>
+      // Khởi tạo an toàn (có thể dùng EL/JSTL nếu chuyển hết, nhưng tạm giữ để đảm bảo an toàn cho vòng lặp)
+      if (aisles == null) aisles = Collections.emptyList();
+      if (mapAisleToRacks == null) mapAisleToRacks = Collections.emptyMap();
+      if (rackLotInfoFormatted == null) rackLotInfoFormatted = Collections.emptyMap();
+    %>
 
-  <form action="WarehouseAreaController" method="get" id="filterForm">
-    <input type="hidden" name="lotId" value="<%= request.getParameter("lotId") != null ? request.getParameter("lotId") : "" %>">
-    <label for="warehouse">Warehouse:</label>
-    <select name="warehouse" id="warehouse" onchange="document.getElementById('filterForm').submit();">
-      <%
-        for (Warehouse w : warehouses) {
-          String selected = w.getWarehouseId().equals(selectedWarehouse) ? "selected" : "";
-      %>
-      <option value="<%= w.getWarehouseId() %>" <%= selected %>><%= w.getName() %></option>
-      <%
-        }
-      %>
-    </select>
-
-    <label for="area">Area:</label>
-    <select name="area" id="area" onchange="document.getElementById('filterForm').submit();">
-      <%
-        for (Area a : areas) {
-          String selected = a.getAreaId().equals(selectedArea) ? "selected" : "";
-      %>
-      <option value="<%= a.getAreaId() %>" <%= selected %>><%= a.getName() %></option>
-      <%
-        }
-      %>
-    </select>
-  </form>
-  <%
-    Lot selectedLot = (Lot) request.getAttribute("selectedLot");
-    List<LotDetail> selectedLotDetails = (List<LotDetail>) request.getAttribute("selectedLotDetails");
-    Map<String, String> productMap = (Map<String, String>) request.getAttribute("productMap");
-  %>
-
-  <% if (selectedLot != null) { %>
-  <div class="lot-section">
-    <h3>Lot Code: <%= selectedLot.getLotCode() %></h3>
-    <table class="lot-table">
-      <tr>
-        <th>LotDetail ID</th>
-        <th>Product</th>
-        <th>Quantity Remaining</th>
-        <th>Status</th>
-      </tr>
-      <% if (selectedLotDetails != null && !selectedLotDetails.isEmpty()) {
-        for (LotDetail d : selectedLotDetails) { %>
-      <tr>
-        <td><%= d.getLotDetailId() %></td>
-        <td><%= productMap.getOrDefault(d.getProductId(), "(Không rõ)") %></td>
-        <td><%= d.getQuantityRemaining() %></td>
+    <form action="WarehouseAreaController" method="get" id="filterForm">
+      <input type="hidden" name="lotId" value="<%= request.getParameter("lotId") != null ? request.getParameter("lotId") : "" %>">
+      <label for="warehouse">Warehouse:</label>
+      <select name="warehouse" id="warehouse" onchange="document.getElementById('filterForm').submit();">
         <%
-          int st = d.getStatus();
-          String statusLabel, statusClass;
-          switch (st) {
-            case 0:  statusLabel = "Inactive"; statusClass = "status-inactive"; break;
-            case 1:  statusLabel = "Active"; statusClass = "status-active"; break;
-            case 2:  statusLabel = "Reserved"; statusClass = "status-reserved"; break;
-            default: statusLabel = "Unknown"; statusClass = "status-unknown"; break;
+          for (Warehouse w : warehouses) {
+            String selected = w.getWarehouseId().equals(selectedWarehouse) ? "selected" : "";
+        %>
+        <option value="<%= w.getWarehouseId() %>" <%= selected %>><%= w.getName() %></option>
+        <%
           }
         %>
-        <td><span class="<%= statusClass %>"><%= statusLabel %></span></td>
-      </tr>
-      <%  } } else { %>
-      <tr><td colspan="3" style="text-align:center;">Không có dữ liệu Lot Detail</td></tr>
-      <% } %>
-    </table>
-  </div>
-  <% } %>
+      </select>
+
+      <label for="area">Area:</label>
+      <select name="area" id="area" onchange="document.getElementById('filterForm').submit();">
+        <%
+          for (Area a : areas) {
+            String selected = a.getAreaId().equals(selectedArea) ? "selected" : "";
+        %>
+        <option value="<%= a.getAreaId() %>" <%= selected %>><%= a.getName() %></option>
+        <%
+          }
+        %>
+      </select>
+    </form>
+    <%
+      Lot selectedLot = (Lot) request.getAttribute("selectedLot");
+      List<LotDetail> selectedLotDetails = (List<LotDetail>) request.getAttribute("selectedLotDetails");
+      Map<String, String> productMap = (Map<String, String>) request.getAttribute("productMap");
+    %>
+
+    <% if (selectedLot != null) { %>
+    <div class="lot-section">
+      <h3>Lot Code: <%= selectedLot.getLotCode() %></h3>
+      <table class="lot-table">
+        <tr>
+          <th>LotDetail ID</th>
+          <th>Product</th>
+          <th>Quantity Remaining</th>
+          <th>Status</th>
+        </tr>
+        <% if (selectedLotDetails != null && !selectedLotDetails.isEmpty()) {
+          for (LotDetail d : selectedLotDetails) { %>
+        <tr>
+          <td><%= d.getLotDetailId() %></td>
+          <td><%= productMap.getOrDefault(d.getProductId(), "(Không rõ)") %></td>
+          <td><%= d.getQuantityRemaining() %></td>
+          <%
+            int st = d.getStatus();
+            String statusLabel, statusClass;
+            switch (st) {
+              case 0:  statusLabel = "Inactive"; statusClass = "status-inactive"; break;
+              case 1:  statusLabel = "Active"; statusClass = "status-active"; break;
+              case 2:  statusLabel = "Reserved"; statusClass = "status-reserved"; break;
+              default: statusLabel = "Unknown"; statusClass = "status-unknown"; break;
+            }
+          %>
+          <td><span class="<%= statusClass %>"><%= statusLabel %></span></td>
+        </tr>
+        <%  } } else { %>
+        <tr><td colspan="3" style="text-align:center;">Không có dữ liệu Lot Detail</td></tr>
+        <% } %>
+      </table>
+    </div>
+    <% } %>
   </div>
   <%
     // Kiểm tra điều kiện chính để render lưới

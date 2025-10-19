@@ -174,6 +174,28 @@ public class RackLotDAO extends DBContext {
         }
         return result;
     }
+    public String getNextRacklotId() {
+        String sql = """
+        SELECT 
+            'RL' + RIGHT('000' + CAST(
+                ISNULL(MAX(TRY_CAST(SUBSTRING(LTRIM(RTRIM(racklot_id)), 3, 3) AS INT)), 0) + 1
+            AS VARCHAR(3)), 3) AS next_racklot_id
+        FROM [dbo].[racklot]
+        WHERE LEN(LTRIM(RTRIM(racklot_id))) >= 5
+          AND LEFT(LTRIM(RTRIM(racklot_id)), 2) = 'RL';
+        """;
+
+        try (PreparedStatement ps = connection.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                String next = rs.getString("next_racklot_id");
+                return next != null ? next : "RL001";
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "RL001";
+    }
     // 🔍 Main test
     public static void main(String[] args) {
         RackLotDAO dao = new RackLotDAO();
@@ -187,28 +209,30 @@ public class RackLotDAO extends DBContext {
 //                    ", Quantity: " + r.getQuantity());
 //        }
 
-        System.out.println("\n=== Kiểm tra chi tiết sản phẩm trong 1 rack ===");
-        String testRackId = "A001-01R1"; // 👉 thay bằng rackid có thật trong DB
-        List<Map<String, Object>> productList = dao.getProductQuantitiesByRack(testRackId);
-        for (Map<String, Object> p : productList) {
-            System.out.println("Rack: " + testRackId +
-                    " | ProductID: " + p.get("productId") +
-                    " | ProductName: " + p.get("productName") +
-                    " | LotDetailID: " + p.get("lotDetailId") +
-                    " | Quantity: " + p.get("quantity"));
-        }
-
-        System.out.println("\n=== Tổng số lượng trong rack " + testRackId + " ===");
-        int total = dao.getTotalQuantityInRack(testRackId);
-        System.out.println("Total quantity in rack " + testRackId + " = " + total);
-        System.out.println("\n=== Danh sách Lot trong rack ===");
-        List<Map<String, Object>> lotList = dao.getLotInfoByRack(testRackId);
-        for (Map<String, Object> lot : lotList) {
-            System.out.println("Rack: " + testRackId +
-                    " | LotID: " + lot.get("lotId") +
-                    " | LotDetailID: " + lot.get("lotdetailId") +
-                    " | Supplier: " + lot.get("supplierId") +
-                    " | Quantity: " + lot.get("quantity"));
-        }
+//        System.out.println("\n=== Kiểm tra chi tiết sản phẩm trong 1 rack ===");
+//        String testRackId = "A001-01R1"; // 👉 thay bằng rackid có thật trong DB
+//        List<Map<String, Object>> productList = dao.getProductQuantitiesByRack(testRackId);
+//        for (Map<String, Object> p : productList) {
+//            System.out.println("Rack: " + testRackId +
+//                    " | ProductID: " + p.get("productId") +
+//                    " | ProductName: " + p.get("productName") +
+//                    " | LotDetailID: " + p.get("lotDetailId") +
+//                    " | Quantity: " + p.get("quantity"));
+//        }
+//
+//        System.out.println("\n=== Tổng số lượng trong rack " + testRackId + " ===");
+//        int total = dao.getTotalQuantityInRack(testRackId);
+//        System.out.println("Total quantity in rack " + testRackId + " = " + total);
+//        System.out.println("\n=== Danh sách Lot trong rack ===");
+//        List<Map<String, Object>> lotList = dao.getLotInfoByRack(testRackId);
+//        for (Map<String, Object> lot : lotList) {
+//            System.out.println("Rack: " + testRackId +
+//                    " | LotID: " + lot.get("lotId") +
+//                    " | LotDetailID: " + lot.get("lotdetailId") +
+//                    " | Supplier: " + lot.get("supplierId") +
+//                    " | Quantity: " + lot.get("quantity"));
+//        }
+        RackLotDAO a = new RackLotDAO();
+        System.out.println("Next Rack ID: " + a.getNextRacklotId());
     }
-}                            
+}
