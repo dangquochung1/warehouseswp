@@ -11,6 +11,16 @@ public class LotDetail {
 
     public LotDetail() {}
 
+    public LotDetail(String lotDetailId, String lotId, String productId, double purchasePrice, int quantityTotal, int quantityRemaining, int status) {
+        this.lotDetailId = lotDetailId;
+        this.lotId = lotId;
+        this.productId = productId;
+        this.purchasePrice = purchasePrice;
+        this.quantityTotal = quantityTotal;
+        this.quantityRemaining = quantityRemaining;
+        this.status = status;
+    }
+
     public LotDetail(String lotDetailId, String lotId, String productId) {
         this.lotDetailId = lotDetailId;
         this.lotId = lotId;

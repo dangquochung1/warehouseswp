@@ -53,8 +53,12 @@
         <td><%= l.getDescription() %></td>
         <td>
             <button class="btn-link"
-                    onclick="event.stopPropagation(); goToLocation('<%= l.getLotId() %>')">Arrange</button>
+                    onclick="event.stopPropagation();
+                            window.location.href='RackLotController?warehouseId=W001&lotId=<%= l.getLotId() %>'">
+                Arrange All
+            </button>
         </td>
+
     </tr>
 
     <tr id="detail-<%= l.getLotId() %>" class="detail-row">
@@ -74,9 +78,9 @@
                         List<LotDetail> details = lotDetailsMap != null ? lotDetailsMap.get(l.getLotId()) : null;
                         if (details != null && !details.isEmpty()) {
                             for (LotDetail d : details) {
-                                int status = d.getStatus(); // 0 = pending, 1 = done
-                                String statusClass = status == 1 ? "done" : "pending";
-                                String statusText = status == 1 ? "Done" : "Pending";
+                                int status = d.getQuantityRemaining(); // 0 = pending, 1 = done
+                                String statusClass = status == 0 ? "done" : "pending";
+                                String statusText = status == 0 ? "Done" : "Pending";
                     %>
                     <tr>
                         <td><%= d.getLotDetailId() %></td>
@@ -86,6 +90,7 @@
                         <td><%= d.getQuantityRemaining() %></td>
                         <td><span class="status <%= statusClass %>"><%= statusText %></span></td>
                     </tr>
+
                     <%
                         }
                     } else {
@@ -102,10 +107,5 @@
         }
     %>
 </table>
-<script>
-    function goToLocation(lotId) {
-        window.location.href = "WarehouseAreaController?lotId=" + lotId;
-    }
-</script>
 </body>
 </html>
