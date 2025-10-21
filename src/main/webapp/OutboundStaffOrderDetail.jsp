@@ -1,7 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="vi">
-<%@include file="SideBarForStaff.jsp" %>
+<%@include file="SideBar.jsp" %>
 
 <body>
 

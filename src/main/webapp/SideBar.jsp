@@ -37,10 +37,10 @@
     <div class="header">
 
         <div class="header-left active">
-            <a href="index.html" class="logo">
+            <a href="index.jsp" class="logo">
                 <img src="assets/img/logo.png" alt="">
             </a>
-            <a href="index.html" class="logo-small">
+            <a href="index.jsp" class="logo-small">
                 <img src="assets/img/logo-small.png" alt="">
             </a>
             <a id="toggle_btn" href="javascript:void(0);">
@@ -201,53 +201,44 @@
             <div id="sidebar-menu" class="sidebar-menu">
                 <ul>
                     <li>
-                        <a href="index.html"><img src="assets/img/icons/dashboard.svg" alt="img"><span> Dashboard</span> </a>
+                        <a href="index.jsp"><img src="assets/img/icons/dashboard.svg" alt="img"><span> Dashboard</span> </a>
                     </li>
-                    <li class="submenu">
-                        <a href="javascript:void(0);"><img src="assets/img/icons/product.svg" alt="img"><span> Product</span> <span class="menu-arrow"></span></a>
+     <li class="submenu">
+                        <a href="javascript:void(0);"><img src="assets/img/icons/product.svg" alt="img"><span>
+                                    Inbound </span><span class="menu-arrow"></span></a>
                         <ul>
-                            <li><a href="productlist.html">Product List</a></li>
-                            <li><a href="addproduct.html">Add Product</a></li>
-                            <li><a href="categorylist.html">Category List</a></li>
-                            <li><a href="addcategory.html">Add Category</a></li>
-                            <li><a href="subcategorylist.html">Sub Category List</a></li>
-                            <li><a href="subaddcategory.html">Add Sub Category</a></li>
-                            <li><a href="brandlist.html">Brand List</a></li>
-                            <li><a href="addbrand.html">Add Brand</a></li>
-                            <li><a href="importproduct.html">Import Products</a></li>
-                            <li><a href="barcode.html">Print Barcode</a></li>
+                            <li><a href="productlist.html">Inbound</a></li>
+                            <li><a href="addproduct.html">Inbound</a></li>
+                            <li><a href="categorylist.html">Inbound</a></li>
+                            <li><a href="addcategory.html">Inbound</a></li>
                         </ul>
                     </li>
+
                     <li class="submenu">
-                        <a href="javascript:void(0);"><img src="assets/img/icons/sales1.svg" alt="img"><span> Sales</span> <span class="menu-arrow"></span></a>
+                        <a href="javascript:void(0);"><img src="assets/img/icons/sales1.svg" alt="img"><span> Location
+                                </span><span class="menu-arrow"></span></a>
                         <ul>
-                            <li><a href="saleslist.html">Sales List</a></li>
-                            <li><a href="pos.html">POS</a></li>
-                            <li><a href="pos.html">New Sales</a></li>
-                            <li><a href="salesreturnlists.html">Sales Return List</a></li>
-                            <li><a href="createsalesreturns.html">New Sales Return</a></li>
+                            <li><a href="WarehouseAreaController">View Location</a></li>
+                            <li><a href="pos.html">ABC</a></li>
+                            <li><a href="pos.html">ABC</a></li>
+                            <li><a href="salesreturnlists.html">ABC</a></li>
                         </ul>
                     </li>
+
                     <li class="submenu">
-                        <a href="javascript:void(0);"><img src="assets/img/icons/purchase1.svg" alt="img"><span> Purchase</span> <span class="menu-arrow"></span></a>
+                        <a href="javascript:void(0);"><img src="assets/img/icons/purchase1.svg" alt="img"><span>
+                                    Lot </span><span class="menu-arrow"></span></a>
                         <ul>
-                            <li><a href="purchaselist.html">Purchase List</a></li>
-                            <li><a href="addpurchase.html">Add Purchase</a></li>
-                            <li><a href="importpurchase.html">Import Purchase</a></li>
+                            <li><a href="LotController">View</a></li>
+                            <li><a href="addpurchase.html">ABC</a></li>
+                            <li><a href="importpurchase.html">ABC</a></li>
                         </ul>
                     </li>
-                    <li class="submenu">
-                        <a href="javascript:void(0);"><img src="assets/img/icons/expense1.svg" alt="img"><span> Inbound Manager</span> <span class="menu-arrow"></span></a>
-                        <ul>
-                            <li><a href="zzz">Inbound Dashboard</a></li>
-                            <li><a href="Inbound.jsp">Create Inbound Order</a></li>
-                            <li><a href="expensecategory.html">Expense Category</a></li>
-                        </ul>
-                    </li>
+
                     <li class="submenu">
                         <a href="javascript:void(0);"><img src="assets/img/icons/quotation1.svg" alt="img"><span> Outbound Manager</span> <span class="menu-arrow"></span></a>
                         <ul>
-                            <li><a href="outboundmanager" class="active">Outbound Dashboard</a></li>
+                            <li><a href="outboundmanager">Outbound Dashboard</a></li>
                             <li><a href="outboundcreateorder" >Create Outbound Order</a></li>
                             <li><a href="outboundcompleteorder" >Complete Outbound - Export Bill</a></li>
 
@@ -262,60 +253,10 @@
                                             </ul>
                                         </li>
                     <li class="submenu">
-                        <a href="javascript:void(0);"><img src="assets/img/icons/transfer1.svg" alt="img"><span> Transfer</span> <span class="menu-arrow"></span></a>
-                        <ul>
-                            <li><a href="transferlist.html">Transfer List</a></li>
-                            <li><a href="addtransfer.html">Add Transfer </a></li>
-                            <li><a href="importtransfer.html">Import Transfer </a></li>
-                        </ul>
-                    </li>
-                    <li class="submenu">
-                        <a href="javascript:void(0);"><img src="assets/img/icons/return1.svg" alt="img"><span> Return</span> <span class="menu-arrow"></span></a>
-                        <ul>
-                            <li><a href="salesreturnlist.html">Sales Return List</a></li>
-                            <li><a href="createsalesreturn.html">Add Sales Return </a></li>
-                            <li><a href="purchasereturnlist.html">Purchase Return List</a></li>
-                            <li><a href="createpurchasereturn.html">Add Purchase Return </a></li>
-                        </ul>
-                    </li>
-                    <li class="submenu">
-                        <a href="javascript:void(0);"><img src="assets/img/icons/users1.svg" alt="img"><span> People</span> <span class="menu-arrow"></span></a>
-                        <ul>
-                            <li><a href="customerlist.html">Customer List</a></li>
-                            <li><a href="addcustomer.html">Add Customer </a></li>
-                            <li><a href="supplierlist.html">Supplier List</a></li>
-                            <li><a href="addsupplier.html">Add Supplier </a></li>
-                            <li><a href="userlist.html">User List</a></li>
-                            <li><a href="adduser.html">Add User</a></li>
-                            <li><a href="storelist.html">Store List</a></li>
-                            <li><a href="addstore.html">Add Store</a></li>
-                        </ul>
-                    </li>
-                    <li class="submenu">
-                        <a href="javascript:void(0);"><img src="assets/img/icons/places.svg" alt="img"><span>Location</span> <span class="menu-arrow"></span></a>
-                        <ul>
-                            <li><a href="WarehouseAreaController">View location</a></li>
-                            <li><a href="countrieslist.html">Countries list</a></li>
-                            <li><a href="newstate.html">New State </a></li>
-                            <li><a href="statelist.html">State list</a></li>
-                        </ul>
-                    </li>
-
-                    <li class="submenu">
-                        <a href="javascript:void(0);"><i data-feather="alert-octagon"></i> <span> Error Pages </span> <span class="menu-arrow"></span></a>
-                        <ul>
-                            <li><a href="error-404.html">404 Error </a></li>
-                            <li><a href="error-500.html">500 Error </a></li>
-                        </ul>
-                    </li>
-
-                    <li class="submenu">
-                        <a href="javascript:void(0);"><img src="assets/img/icons/users1.svg" alt="img"><span> Users</span> <span class="menu-arrow"></span></a>
-                        <ul>
-                            <li><a href="newuser.html">New User </a></li>
-                            <li><a href="userlists.html">Users List</a></li>
-                        </ul>
-                    </li>
+                                        <li><a href="storelist.html"><img src="assets/img/icons/places.svg" alt="img"><span>Store
+                                                        Management</span></a></li>
+                                        <li><a href="settings.html"><img src="assets/img/icons/settings.svg"
+                                                                         alt="img"><span>Settings</span></a></li>
                 </ul>
             </div>
         </div>

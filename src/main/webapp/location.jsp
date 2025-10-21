@@ -7,6 +7,7 @@
 </head>
 <body>
 <h1>Sơ đồ kho Laptop</h1>
+<a href="index.jsp">Home</a>
 <div class="container">
   <div class="leftside">
     <%
