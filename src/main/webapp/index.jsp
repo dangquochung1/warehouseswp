@@ -1,16 +1,3 @@
-<%--<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>--%>
-<%--<!DOCTYPE html>--%>
-<%--<html>--%>
-<%--<head>--%>
-<%--    <title>JSP + Controller</title>--%>
-<%--</head>--%>
-<%--<body>--%>
-<%--<h1>Hello from JSP!</h1>--%>
-<%--<a href="WarehouseAreaController">Go to location</a><br>--%>
-<%--<a href="LotController">Lot List</a><br>--%>
-
-<%--</body>--%>
-<%--</html>--%>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -182,14 +169,14 @@
 
                         </ul>
                     </li>
-                                        </li>
-                                        <li class="submenu">
-                                            <a href="javascript:void(0);"><img src="assets/img/icons/product.svg" alt="img"><span> Outbound For Staff</span> <span class="menu-arrow"></span></a>
-                                            <ul>
-                                                <li><a href="outboundstafforderlist" >List Outbound Order </a></li>
-                                                <li><a href="#">Calendar</a></li>
-                                            </ul>
-                                        </li>
+                    </li>
+                    <li class="submenu">
+                        <a href="javascript:void(0);"><img src="assets/img/icons/product.svg" alt="img"><span> Outbound For Staff</span> <span class="menu-arrow"></span></a>
+                        <ul>
+                            <li><a href="outboundstafforderlist" >List Outbound Order </a></li>
+                            <li><a href="#">Calendar</a></li>
+                        </ul>
+                    </li>
                     <li class="submenu">
 
                     <li><a href="storelist.html"><img src="assets/img/icons/places.svg" alt="img"><span>Store

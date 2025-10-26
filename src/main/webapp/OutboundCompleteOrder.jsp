@@ -5,54 +5,54 @@
 <body>
 
 <div class="page-wrapper">
-<div class="content">
- <div class="page-header">
-    <h1 class="page-title" style="text-align:left; font-size:32px; font-weight:bold; margin-bottom:20px;">
-        Outbound Manager Dashboard
-    </h1>
- </div>
+    <div class="content">
+        <div class="page-header">
+            <h1 class="page-title" style="text-align:left; font-size:32px; font-weight:bold; margin-bottom:20px;">
+                Outbound Manager Dashboard
+            </h1>
+        </div>
 
 
-<div class="card mb-0">
-<div class="card-body">
-    <h4 class="card-title">List Of Outbound Orders For Staff</h4>
-    <div class="table-responsive dataview">
-        <table class="table datatable">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Create date</th>
-                    <th>Create by</th>
-                    <th>Assigned To</th>
-                    <th>Status</th>
-                    <th class="col-action">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <c:forEach var="odlist" items="${completedOrderList}">
-                    <tr>
-                        <td>${odlist.orderId}</td>
-                        <td>${odlist.createdAt}</td>
-                        <td>${odlist.createdBy}</td>
-                        <td>${odlist.assignedTo}</td>
-                        <td>${odlist.status}</td>
-<td class="col-action">
-    <div class="action-buttons-table" style="display:flex; gap:10px;">
-        <a href="${pageContext.request.contextPath}/exportOutboundExcel?odid=${odlist.orderId}" class="export-btn">
-            Export Excel
-        </a>
+        <div class="card mb-0">
+            <div class="card-body">
+                <h4 class="card-title">List Of Outbound Orders For Staff</h4>
+                <div class="table-responsive dataview">
+                    <table class="table datatable">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Create date</th>
+                            <th>Create by</th>
+                            <th>Assigned To</th>
+                            <th>Status</th>
+                            <th class="col-action">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <c:forEach var="odlist" items="${completedOrderList}">
+                            <tr>
+                                <td>${odlist.orderId}</td>
+                                <td>${odlist.createdAt}</td>
+                                <td>${odlist.createdBy}</td>
+                                <td>${odlist.assignedTo}</td>
+                                <td>${odlist.status}</td>
+                                <td class="col-action">
+                                    <div class="action-buttons-table" style="display:flex; gap:10px;">
+                                        <a href="${pageContext.request.contextPath}/exportOutboundExcel?odid=${odlist.orderId}" class="export-btn">
+                                            Export Excel
+                                        </a>
+                                    </div>
+                                </td>
+
+
+                            </tr>
+                        </c:forEach>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
-</td>
-
-
-                    </tr>
-                </c:forEach>
-            </tbody>
-        </table>
-    </div>
-</div>
-</div>
-</div>
 </div>
 </div>
 
