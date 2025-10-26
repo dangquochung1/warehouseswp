@@ -203,7 +203,7 @@
                     <li>
                         <a href="index.jsp"><img src="assets/img/icons/dashboard.svg" alt="img"><span> Dashboard</span> </a>
                     </li>
-     <li class="submenu">
+                    <li class="submenu">
                         <a href="javascript:void(0);"><img src="assets/img/icons/product.svg" alt="img"><span>
                                     Inbound </span><span class="menu-arrow"></span></a>
                         <ul>
@@ -244,19 +244,19 @@
 
                         </ul>
                     </li>
-                                        </li>
-                                        <li class="submenu">
-                                            <a href="javascript:void(0);"><img src="assets/img/icons/product.svg" alt="img"><span> Outbound For Staff</span> <span class="menu-arrow"></span></a>
-                                            <ul>
-                                                <li><a href="outboundstafforderlist" >List Outbound Order </a></li>
-                                                <li><a href="#">Calendar</a></li>
-                                            </ul>
-                                        </li>
+                    </li>
                     <li class="submenu">
-                                        <li><a href="storelist.html"><img src="assets/img/icons/places.svg" alt="img"><span>Store
+                        <a href="javascript:void(0);"><img src="assets/img/icons/product.svg" alt="img"><span> Outbound For Staff</span> <span class="menu-arrow"></span></a>
+                        <ul>
+                            <li><a href="outboundstafforderlist" >List Outbound Order </a></li>
+                            <li><a href="#">Calendar</a></li>
+                        </ul>
+                    </li>
+                    <li class="submenu">
+                    <li><a href="storelist.html"><img src="assets/img/icons/places.svg" alt="img"><span>Store
                                                         Management</span></a></li>
-                                        <li><a href="settings.html"><img src="assets/img/icons/settings.svg"
-                                                                         alt="img"><span>Settings</span></a></li>
+                    <li><a href="settings.html"><img src="assets/img/icons/settings.svg"
+                                                     alt="img"><span>Settings</span></a></li>
                 </ul>
             </div>
         </div>
