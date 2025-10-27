@@ -4,9 +4,9 @@ public class Rack {
     private String rackId;
     private String aisleId;
     private String name;
-    private int sum; // ✅ tổng quantity của các RackLot có rackId này
+    private int sum;
     private String description;
-
+    private int maxcapacity;
 
     public Rack() {}
 
@@ -16,7 +16,14 @@ public class Rack {
         this.aisleId = aisleId;
     }
 
-    // Có thể thêm constructor đầy đủ nếu cần
+    public Rack(String rackId, String aisleId, String name, int sum, String description, int maxcapacity) {
+        this.rackId = rackId;
+        this.aisleId = aisleId;
+        this.name = name;
+        this.sum = sum;
+        this.description = description;
+        this.maxcapacity = maxcapacity;
+    }
     public Rack(String rackId, String aisleId, String name, int sum,String description ) {
         this.rackId = rackId;
         this.aisleId = aisleId;
@@ -24,7 +31,6 @@ public class Rack {
         this.sum = sum;
         this.description = description;
     }
-
     public String getRackId() {
         return rackId;
     }
@@ -49,6 +55,14 @@ public class Rack {
         this.name = name;
     }
 
+    public int getSum() {
+        return sum;
+    }
+
+    public void setSum(int sum) {
+        this.sum = sum;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -57,13 +71,12 @@ public class Rack {
         this.description = description;
     }
 
-    // ✅ Getter & Setter cho sum
-    public int getSum() {
-        return sum;
+    public int getMaxcapacity() {
+        return maxcapacity;
     }
 
-    public void setSum(int sum) {
-        this.sum = sum;
+    public void setMaxcapacity(int maxcapacity) {
+        this.maxcapacity = maxcapacity;
     }
 
     @Override
@@ -74,7 +87,7 @@ public class Rack {
                 ", name='" + name + '\'' +
                 ", sum=" + sum +
                 ", description='" + description + '\'' +
+                ", maxcapacity=" + maxcapacity +
                 '}';
     }
-
 }

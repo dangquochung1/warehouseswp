@@ -13,7 +13,7 @@ public class Product {
     private double lowestPrice;
     private int quantity_expected;
     private String note;
-
+    private String categoryId;
     public Product() {}
 
     public Product(String productId, String name) {
@@ -113,5 +113,13 @@ public class Product {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public String getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(String categoryId) {
+        this.categoryId = categoryId;
     }
 }
