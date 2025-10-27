@@ -163,21 +163,15 @@
   }
 
   /* Màu sắc cho rack dựa trên dung lượng */
-  .green {
-    background: #dcfce7; /* Xanh nhạt cho rỗng (sum=0) */
-    border-color: #22c55e;
-  }
-
   .yellow {
-    background: #fef9c3; /* Vàng cho ít hàng (sum < 50) */
-    border-color: #eab308;
+    background: rgba(255, 213, 79, 0.75); /* vàng trong suốt */
+    border-color: #f59e0b;
   }
 
   .orange {
-    background: #ffedd5; /* Cam cho đầy (sum >=50) */
+    background: rgba(255, 138, 101, 0.8); /* cam trong suốt */
     border-color: #f97316;
   }
-
   /* Popup chi tiết lot */
   #popup {
     display: none;
@@ -228,7 +222,15 @@
   #popup button:hover {
     background: #2563eb;
   }
-
+  .category-CAT001 { background: #e0f7fa; border-color: #00acc1; } /* Laptop */
+  .category-CAT002 { background: #f3e5f5; border-color: #8e24aa; } /* RAM */
+  .category-CAT003 { background: #fff3e0; border-color: #fb8c00; } /* Screen */
+  .category-CAT004 { background: #e8f5e9; border-color: #43a047; } /* CPU */
+  .category-CAT005 { background: #fce4ec; border-color: #d81b60; } /* Chuột */
+  .category-CAT006 { background: #ede7f6; border-color: #5e35b1; } /* Bàn phím */
+  .category-CAT007 { background: #f3f3f3; border-color: #616161; } /* Case */
+  .cell.yellow { background: rgba(255, 213, 79, 0.9) !important; border-color: #f59e0b !important; }
+  .cell.orange { background: rgba(255, 138, 101, 0.95) !important; border-color: #f97316 !important; }
   /* Responsive: Nếu màn hình nhỏ, stack left/right vertically */
   @media (max-width: 768px) {
     .container {
@@ -242,6 +244,8 @@
     .grid {
       grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* Tự động điều chỉnh columns */
     }
+
+
   }
 </style>
 <body>
@@ -253,25 +257,19 @@
     <div class="container">
       <div class="leftside">
         <%
-          // ************************************************
-          // Khối scriptlet LỌC VÀ CHUYỂN ĐỔI BỊ LOẠI BỎ
-          // Chỉ giữ lại các biến cần thiết cho phần filter
-          // ************************************************
+
           List<Warehouse> warehouses = (List<Warehouse>) request.getAttribute("warehouses");
           List<Area> areas = (List<Area>) request.getAttribute("areas");
           String selectedWarehouse = (String) request.getAttribute("selectedWarehouse");
           String selectedArea = (String) request.getAttribute("selectedArea");
 
-          // Khai báo các biến cấu trúc từ Controller (Giảm scriptlet đầu tiên)
           List<Aisle> aisles = (List<Aisle>) request.getAttribute("aisles");
           Map<String, List<Rack>> mapAisleToRacks = (Map<String, List<Rack>>) request.getAttribute("mapAisleToRacks");
           Map<String, String> rackLotInfoFormatted = (Map<String, String>) request.getAttribute("rackLotInfoFormatted");
-
-          // Dùng biến int đã được Controller tính
+          Map<String, String> categoryMap = (Map<String, String>) request.getAttribute("categoryMap");
           int maxRows = (Integer) request.getAttribute("maxRows");
           int cols = (Integer) request.getAttribute("cols");
 
-          // Khởi tạo an toàn (có thể dùng EL/JSTL nếu chuyển hết, nhưng tạm giữ để đảm bảo an toàn cho vòng lặp)
           if (aisles == null) aisles = Collections.emptyList();
           if (mapAisleToRacks == null) mapAisleToRacks = Collections.emptyMap();
           if (rackLotInfoFormatted == null) rackLotInfoFormatted = Collections.emptyMap();
@@ -353,7 +351,10 @@
             // Row 0: Aisle headers
             for (Aisle a : aisles) {
           %>
-          <div class="cell aisle-header"><%= a.getName() %></div>
+          <div class="cell aisle-header category-<%= a.getCategoryId() %>">
+            <div><%= a.getName() %></div>
+            <%= categoryMap.getOrDefault(a.getCategoryId(), "(Không rõ)") %>
+          </div>
           <%
             }
 
@@ -364,10 +365,9 @@
                 if (listRacks != null && row < listRacks.size()) {
                   Rack r = listRacks.get(row);
                   int sum = r.getSum();
-                  String colorClass;
-                  if (sum == 0) colorClass = "green";
-                  else if (sum >= 50) colorClass = "orange";
-                  else colorClass = "yellow";
+                  String colorClass = "category-" + a.getCategoryId();
+                  if (sum == 50) colorClass = "orange";
+                  else if(sum > 0) colorClass = "yellow";
           %>
           <%
             // ************************************************
@@ -375,9 +375,10 @@
             // Thay bằng việc lấy chuỗi đã định dạng từ Controller
             // ************************************************
             String lotInfoStr = rackLotInfoFormatted.getOrDefault(r.getRackId(), "Lỗi dữ liệu.");
+
           %>
-          <div class="cell <%= colorClass %>" data-lots="<%= lotInfoStr %>">
-            <div class="rack-name"><%= r.getRackId() %></div>
+          <div class="cell <%= colorClass %> category-<%= a.getCategoryId() %>" data-lots="<%= lotInfoStr %>">
+          <div class="rack-name"><%= r.getRackId() %></div>
             <div class="capacity"><%= sum %> / 50</div>
           </div>
 
@@ -413,7 +414,7 @@
                 border-radius:6px;
                 padding:6px 12px;
                 cursor:pointer;
-            ">Đóng</button>
+            ">Done</button>
     </div>
 
   </div>  <!-- Kết thúc .content -->
