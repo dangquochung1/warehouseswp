@@ -8,6 +8,9 @@ package controller.outboundController;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import dal.OrderDAO;
 import dal.UserDAO;
 import dal.WarehouseDAO;
@@ -79,56 +82,120 @@ public class OutboundCreateOrderController extends HttpServlet {
 
         try {
             HttpSession session = request.getSession();
-//            User currentUser = (User) session.getAttribute("currentUser");
-//
-//            if (currentUser == null) {
-//                response.sendRedirect("login.jsp");
-//                return;
-//            }
-
-            // Lấy thông tin từ form
             String location = request.getParameter("location");
             String responsibleStaff = request.getParameter("responsibleStaff");
             String orderDate = request.getParameter("orderDate");
             String expectedShipDate = request.getParameter("expectedShipDate");
+            String[] items = request.getParameterValues("items[]");
 
-            // Lấy danh sách sản phẩm
-            String[] productIds = request.getParameterValues("productId");
-            String[] productNames = request.getParameterValues("productName");
-            String[] quantities = request.getParameterValues("quantity");
-            String[] notes = request.getParameterValues("note");
-            String[] aisleIds = request.getParameterValues("aisleId");
-            // Tạo Order object
             Orders order = new Orders();
             order.setType("outbound");
-            order.setCreatedBy("U002"); // Thay "U002" bằng user hiện tại nếu có
+            order.setCreatedBy("U002");
             order.setAssignedTo(responsibleStaff);
             order.setScheduledDate(java.sql.Date.valueOf(orderDate));
             order.setStatus("pending");
-            order.setNote("...");
+            order.setNote("Created from web interface");
 
-            // Tạo danh sách OrderDetail
             List<OrderDetail> orderDetails = new ArrayList<>();
+            dal.ProductDAO productDAO = new dal.ProductDAO();
+            Gson gson = new Gson();
 
-            if (productIds != null && productIds.length > 0) {
-                for (int i = 0; i < productIds.length; i++) {
-                    OrderDetail detail = new OrderDetail();
-                    detail.setProductId(productIds[i]);
-                    detail.setQuantity_expected(Integer.parseInt(quantities[i]));
-                    detail.setNote(notes != null && i < notes.length ? notes[i] : "");
-                    detail.setAisleId(aisleIds[i]);
-                    orderDetails.add(detail);
+            if (items != null && items.length > 0) {
+                for (String raw : items) {
+                    if (raw == null || raw.isEmpty()) continue;
+
+                    String json = java.net.URLDecoder.decode(raw, java.nio.charset.StandardCharsets.UTF_8);
+                    JsonObject node = gson.fromJson(json, JsonObject.class);
+
+                    String productId = node.get("productId").getAsString();
+                    int qtyNeeded = node.get("quantity").getAsInt();
+                    String preferredWid = null;
+                    JsonElement e = node.get("preferredWarehouseId");
+                    if (e != null && !e.isJsonNull()) {
+                        preferredWid = e.getAsString();
+                    }
+
+                    int remaining = qtyNeeded;
+                    int price = node.get("avgPrice").getAsInt();
+                    // ===== BƯỚC 1: Lấy hết từ kho ưu tiên (nếu có) =====
+                    if (preferredWid != null && !preferredWid.isEmpty()) {
+                        List<model.RackLotStock> racks = productDAO.getRackLotsFIFO(productId, preferredWid);
+
+                        for (model.RackLotStock rack : racks) {
+                            if (remaining <= 0) break;
+
+                            int takeQty = Math.min(rack.getQuantity(), remaining);
+
+                            // Tạo OrderDetail cho rack này
+                            OrderDetail detail = new OrderDetail();
+                            detail.setProductId(productId);
+                            detail.setQuantity_expected(takeQty);
+                            detail.setAisleId(rack.getAisleId());
+                            detail.setPrice(price);
+                            detail.setNote("WH:" + preferredWid + " | Rack:" + rack.getRackId() + " | Lot:" + rack.getLotdetailId());
+                            orderDetails.add(detail);
+
+                            // Trừ tồn kho
+                            productDAO.deductRackLotQuantity(rack.getRacklotId(), takeQty);
+                            productDAO.deductLotDetailRemaining(rack.getLotdetailId(), takeQty);
+
+                            remaining -= takeQty;
+                        }
+                    }
+
+                    // ===== BƯỚC 2: Nếu còn thiếu, tìm kho khác =====
+                    if (remaining > 0) {
+                        // Lấy tất cả các kho khác có sản phẩm này
+                        List<Warehouse> otherWarehouses = warehouseDAO.getAllWarehouses();
+
+                        for (Warehouse wh : otherWarehouses) {
+                            if (remaining <= 0) break;
+
+                            // Bỏ qua kho đã dùng
+                            if (wh.getWarehouseId().equals(preferredWid)) continue;
+
+                            List<model.RackLotStock> racks = productDAO.getRackLotsFIFO(productId, wh.getWarehouseId());
+
+                            for (model.RackLotStock rack : racks) {
+                                if (remaining <= 0) break;
+
+                                int takeQty = Math.min(rack.getQuantity(), remaining);
+
+                                // Tạo OrderDetail cho rack này (kho khác)
+                                OrderDetail detail = new OrderDetail();
+                                detail.setProductId(productId);
+                                detail.setQuantity_expected(takeQty);
+                                detail.setAisleId(rack.getAisleId());
+                                detail.setPrice(price);
+                                detail.setNote("FALLBACK_WH:" + wh.getWarehouseId() + " | Rack:" + rack.getRackId() + " | Lot:" + rack.getLotdetailId());
+                                orderDetails.add(detail);
+
+                                // Trừ tồn kho
+                                productDAO.deductRackLotQuantity(rack.getRacklotId(), takeQty);
+                                productDAO.deductLotDetailRemaining(rack.getLotdetailId(), takeQty);
+
+                                remaining -= takeQty;
+                            }
+                        }
+                    }
+
+                    // ===== BƯỚC 3: Nếu vẫn không đủ =====
+                    if (remaining > 0) {
+                        request.setAttribute("errorMessage",
+                                "Not enough stock for product " + productId + ". Short by: " + remaining);
+                        doGet(request, response);
+                        return;
+                    }
                 }
             }
 
-            // Lưu vào database
+            // Lưu Order và OrderDetails
             boolean success = orderDAO.createOutboundOrder(order, orderDetails);
 
             if (success) {
-                session.setAttribute("successMessage", "Outbound order created successfully!");
-                response.sendRedirect("outboundmanager");
+                response.sendRedirect("outboundmanager?success=true");
             } else {
-                request.setAttribute("errorMessage", "Failed to create outbound order!");
+                request.setAttribute("errorMessage", "Failed to create outbound order");
                 doGet(request, response);
             }
 

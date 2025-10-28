@@ -2,8 +2,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="vi">
-<%@include file="SideBar.jsp" %>
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -197,7 +195,10 @@
     </header>
 
     <div class="main-content">
-
+        <aside class="sidebar">
+            <div class="sidebar-item">Dashboard</div>
+            <div class="sidebar-item active">Create outbound order</div>
+        </aside>
 
         <section class="content-area">
             <div class="create-order-container">
@@ -253,7 +254,7 @@
                     <div class="product-section">
                         <div class="product-section-header">
                             <h2>List Add Product</h2>
-                            <button type="button" class="add-product-btn" onclick="addProductRow()">+ Add Product</button>
+                            <button type="button" class="add-product-btn" onclick="openAddProductPopup()">+ Add Product</button>
                         </div>
 
                         <table class="product-table" id="productTable">
@@ -284,145 +285,190 @@
         </section>
     </div>
 </div>
+<!-- ============ Add Product Popup (tất cả sản phẩm, kèm list kho) ============ -->
+<div id="addProductPopup" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.35); z-index:9999;">
+    <div style="max-width:980px; margin:40px auto; background:#fff; border-radius:8px; padding:16px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:12px;">
+            <h3 style="margin:0;">Add products</h3>
+            <input id="searchAll" placeholder="Search product..." style="flex:1; padding:8px; border:1px solid #ddd; border-radius:6px">
+            <button type="button" onclick="closeAddProductPopup()">Close</button>
+        </div>
+        <div style="max-height:60vh; overflow:auto; border:1px solid #eee; border-radius:6px;">
+            <table class="product-table" style="margin:0;">
+                <thead>
+                <tr>
+                    <th style="width:32%">Product</th>
+                    <th style="width:28%">Warehouse (stock)</th>
+                    <th style="width:14%">Qty</th>
+                    <th style="width:14%"></th>
+                </tr>
+                </thead>
+                <tbody id="popupProductsBody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
 <script>
-
     let rowCount = 0;
 
-    // Khi chọn location, lọc nhân viên và reset bảng sản phẩm
+    // Khi đổi location: vẫn load staff như cũ, nhưng KHÔNG lọc sản phẩm nữa
     const locationSelect = document.getElementById("location");
-
     locationSelect.addEventListener("change", function () {
         const warehouseId = this.value;
         if (!warehouseId) return;
         const staffUrl = "getStaffByWarehouse?warehouseId=" + warehouseId;
-        // Gọi AJAX lấy staff
         fetch(staffUrl)
-            .then(response => response.json())
+            .then(r => r.json())
             .then(data => {
                 const staffSelect = document.getElementById("responsibleStaff");
                 staffSelect.innerHTML = '<option value="">-- Select Staff --</option>';
                 data.forEach(staff => {
-                    const option = document.createElement("option");
-                    option.value = staff.uid;
-                    option.textContent = staff.fullname;
-                    staffSelect.appendChild(option);
+                    const opt = document.createElement("option");
+                    opt.value = staff.uid;
+                    opt.textContent = staff.fullname;
+                    staffSelect.appendChild(opt);
                 });
             })
             .catch(err => console.error("Error loading staff:", err));
 
-        // Reset bảng sản phẩm
-        document.getElementById("productTableBody").innerHTML = "";
-        rowCount = 0;
+        // Không reset bảng sản phẩm nữa (vì sản phẩm không còn phụ thuộc kho)
     });
 
-    // Hiển thị danh sách sản phẩm theo location
-    window.addProductRow = function() {
-        const warehouseId = document.getElementById("location").value;
-        if (!warehouseId) {
-            alert("Please select a location first!");
-            return;
-        }
-        const productUrl = `getProductsByWarehouse?warehouseId=` + warehouseId;
-        fetch(productUrl)
-            .then(response => {
-                console.log("Response status:", response.status);
-                return response.text(); // 👈 DÙNG .text() thay vì .json()
-            })
-            .then(text => {
-                const products = text ? JSON.parse(text) : [];
-                console.log("Products loaded:", products);
-                if (products.length === 0) {
-                    alert("No products found in this warehouse!");
-                    return;
-                }
+    // context path an toàn trong JSP
+    const CTX = '<c:out value="${pageContext.request.contextPath}" />';
 
-                const tbody = document.getElementById("productTableBody");
-                const newRow = tbody.insertRow();
-                rowCount++;
+    async function openAddProductPopup() {
+        const kw = (document.querySelector('#searchAll') && document.querySelector('#searchAll').value) || '';
+        const popup = document.querySelector('#addProductPopup');
+        const body  = document.querySelector('#popupProductsBody');
+        body.innerHTML = '<tr><td colspan="4">Loading...</td></tr>';
+        popup.style.display = 'block';
 
-                let productOptions = "";
-                products.forEach(p => {
-                    productOptions += `<option value="` + p.productId + `">` + p.productId + ` - ` + p.productName + `</option>`;
-                });
+        try {
+            const res  = await fetch(CTX + '/getAllProducts?q=' + encodeURIComponent(kw));
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            const data = await res.json();
 
-                console.log("===== PRODUCT OPTIONS HTML =====");
-                console.log(productOptions);
-                console.log("Options length:", productOptions.length);
-                console.log("================================");
+            if (!Array.isArray(data) || data.length === 0) {
+                body.innerHTML = '<tr><td colspan="4">No products found.</td></tr>';
+                return;
+            }
 
-                const rowHTML =
-                    '<td>' + rowCount + '</td>' +
+            body.innerHTML = '';
+
+            data.forEach(p => {
+                const tr = document.createElement('tr');
+
+                // Tạo options với warehouse + aisle
+                const options = (p.warehouses && p.warehouses.length)
+                    ? p.warehouses.map(w => {
+                        const aisleText = w.aisleId && w.aisleName
+                            ? ' - Aisle: ' + w.aisleName
+                            : (w.aisleId ? ' - Aisle: ' + w.aisleId : '');
+                        return '<option value="'+ w.warehouseId +'" data-qty="'+ w.quantity +'" data-aisleid="'+ (w.aisleId || '') +'" data-aislename="'+ (w.aisleName || '') +'">' +
+                            w.warehouseName + aisleText + ' (tồn: ' + w.quantity + ')' +
+                            '</option>';
+                    }).join('')
+                    : '<option value="">(No stock in any warehouse)</option>';
+
+                tr.innerHTML =
+                    '<td>' + p.productName + ' <small style="color:#888">(' + p.productId + ')</small></td>' +
                     '<td>' +
-                    '<select name="productId" required style="width:90%;padding:5px;">' +
-                    '<option value="">--Select--</option>' +
-                    productOptions +
-                    '</select>' +
-                    '<input type="hidden" name="aisleId">' + //
+                    '<select class="sel-warehouse" style="width:100%;">' + options + '</select>' +
                     '</td>' +
-                    '<td><input type="text" name="productName" readonly style="width:95%;padding:5px;"></td>' +
-                    '<td><input type="text" name="aisleName" readonly style="width:90%;padding:5px;"></td>' +
-                    '<td><input type="number" name="lowestPrice" readonly style="width:90%;padding:5px;"></td>' +
-                    '<td><input type="number" name="avgPrice" readonly style="width:95%;padding:5px;"></td>' +
-                    '<td><input type="number" name="quantity" min="1" required style="width:80%;padding:5px;"></td>' +
-                    '<td><input type="text" name="note" style="width:95%;padding:5px;"></td>' +
-                    '<td class="product-row-actions">' +
-                    '<button type="button" onclick="removeProductRow(this)">Delete</button>' +
-                    '</td>';
+                    '<td><input class="inp-qty" type="number" min="1" value="1" style="width:90px"></td>' +
+                    '<td><button type="button" class="btn-add" data-pid="' + p.productId + '" data-pname="' + p.productName + '">Add</button></td>';
 
-                console.log("===== ROW HTML =====");
-                console.log(rowHTML);
-                console.log("====================");
+                body.appendChild(tr);
+            });
 
-                newRow.innerHTML = rowHTML
+            // Xử lý click Add
+            body.onclick = (e) => {
+                if (!e.target.classList.contains('btn-add')) return;
+                const tr   = e.target.closest('tr');
+                const pid  = e.target.dataset.pid;
+                const pname= e.target.dataset.pname;
+                const sel  = tr.querySelector('.sel-warehouse');
+                const wid  = sel ? sel.value : null;
+                const selectedOption = sel && sel.selectedOptions[0];
+                const wtxt = selectedOption ? selectedOption.textContent : '';
+                const qty  = parseInt(tr.querySelector('.inp-qty').value || '1', 10);
 
-                // ✅ Khi chọn product, tự set productName và aisleId
-                const productSelect = newRow.querySelector("select[name='productId']");
-                const productNameInput = newRow.querySelector("input[name='productName']");
-                const aisleInput = newRow.querySelector("input[name='aisleId']");
-                const aisleNameInput = newRow.querySelector("input[name='aisleName']");
-                const lowestPriceInput = newRow.querySelector("input[name='lowestPrice']");
-                const avgPriceInput = newRow.querySelector("input[name='avgPrice']");
-                productSelect.addEventListener("change", function() {
-                    const selected = products.find(p => p.productId == this.value);
-                    if (selected) {
-                        productNameInput.value = selected.productName;
-                        aisleInput.value = selected.aisleId; // ✅ tự động set aisleId
-                        aisleNameInput.value = selected.aisleName; // ✅ set tên aisle
-                        lowestPriceInput.value = selected.lowestPrice; // ✅ set giá thấp nhất
-                        avgPriceInput.value = selected.avgPrice;       // ✅ set giá trung bình
-                    } else {
-                        productNameInput.value = "";
-                        aisleInput.value = "";
-                        aisleNameInput.value = "";
-                        lowestPriceInput.value = "";
-                        avgPriceInput.value = "";
-                    }
+                // Lấy aisleId và aisleName từ data attribute
+                const aisleId = selectedOption ? selectedOption.dataset.aisleid : null;
+                const aisleName = selectedOption ? selectedOption.dataset.aislename : null;
+
+                const productData = data.find(p => p.productId === pid);
+
+                addToDraftTable({
+                    productId: pid,
+                    productName: pname,
+                    preferredWarehouseId: wid,
+                    preferredWarehouseName: wtxt,
+                    aisleId: aisleId,
+                    aisleName: aisleName,
+                    lowestPrice: productData ? productData.lowestPrice : 0,
+                    avgPrice: productData ? productData.avgPrice : 0,
+                    quantity: qty
                 });
-            })
-            .catch(err => console.error("Error loading products:", err));
-    };
+            };
+
+            const search = document.querySelector('#searchAll');
+            if (search) {
+                search.onkeydown = (e) => { if (e.key === 'Enter') openAddProductPopup(); };
+            }
+
+        } catch (err) {
+            console.error('getAllProducts failed:', err);
+            body.innerHTML = '<tr><td colspan="4" style="color:#c00;">Load products failed: ' + err.message + '</td></tr>';
+        }
+    }
+
+    function closeAddProductPopup(){ document.querySelector('#addProductPopup').style.display='none'; }
+
+    // ---------- Thêm dòng vào bảng + serialize items[] ----------
+    function addToDraftTable(item) {
+        const tbody = document.getElementById('productTableBody');
+        const tr = tbody.insertRow();
+        rowCount++;
+
+        const aisleDisplay = item.aisleName || item.aisleId || '(No aisle)';
+
+        tr.innerHTML =
+            '<td>' + rowCount + '</td>' +
+            '<td>' + item.productId + '</td>' +
+            '<td>' + item.productName + '</td>' +
+            '<td>' + aisleDisplay + '</td>' +
+            '<td><input type="number" value="' + (item.lowestPrice || 0) + '" readonly style="width:90%;padding:5px;"></td>' +
+            '<td><input type="number" value="' + (item.avgPrice || 0) + '" readonly style="width:95%;padding:5px;"></td>' +
+            '<td>' + item.quantity + '</td>' +
+            '<td><input type="text" class="row-note" style="width:95%;padding:5px;" placeholder="optional note"></td>' +
+            '<td class="product-row-actions"><button type="button" onclick="removeProductRow(this)">Delete</button></td>';
+
+        const hidden = document.createElement('input');
+        hidden.type = 'hidden';
+        hidden.name = 'items[]';
+        hidden.value = encodeURIComponent(JSON.stringify(item));
+        tr.appendChild(hidden);
+
+        closeAddProductPopup();
+    }
+
 
     window.removeProductRow = function(button) {
         button.closest("tr").remove();
-        updateRowNumbers();
-    };
-
-    function updateRowNumbers() {
         const rows = document.querySelectorAll('#productTableBody tr');
-        rows.forEach((row, index) => {
-            row.cells[0].textContent = index + 1;
-        });
+        rows.forEach((row, idx) => row.cells[0].textContent = idx + 1);
         rowCount = rows.length;
-    }
+    };
 
     // Set default date
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('orderDate').value = today;
     document.getElementById('expectedShipDate').value = today;
-
-
 </script>
+
 
 </body>
 </html>
