@@ -23,7 +23,8 @@ public class WarehouseAreaController extends HttpServlet {
         AreaDAO areaDAO = new AreaDAO();
         AisleDAO aisleDAO = new AisleDAO();
         RackDAO rackDAO = new RackDAO();
-
+        CategoryDAO categoryDAO = new CategoryDAO();
+        Map<String, String> categoryMap = categoryDAO.getCategoryNameMap();
         // --- WAREHOUSES ---
         List<Warehouse> warehouses = warehouseDAO.getAllWarehouses();
         request.setAttribute("warehouses", warehouses);
@@ -137,7 +138,7 @@ public class WarehouseAreaController extends HttpServlet {
         request.setAttribute("mapAisleToRacks", mapAisleToRacks);
         request.setAttribute("maxRows", maxRows);
         request.setAttribute("cols", cols);
-
+        request.setAttribute("categoryMap", categoryMap);
         // Gửi dữ liệu filter
         request.setAttribute("selectedWarehouse", warehouseId);
         request.setAttribute("selectedArea", areaId);

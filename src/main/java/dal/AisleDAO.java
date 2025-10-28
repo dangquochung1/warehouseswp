@@ -9,7 +9,7 @@ public class AisleDAO extends DBContext {
 
     public List<Aisle> getAislesByAreaId(String areaId) {
         List<Aisle> list = new ArrayList<>();
-        String sql = "SELECT aisleid, areaid, name, description FROM aisle WHERE areaid = ?";
+        String sql = "SELECT aisleid, areaid, name, description,category_id FROM aisle WHERE areaid = ?";
         try (PreparedStatement st = connection.prepareStatement(sql)) {
             st.setString(1, areaId);
             try (ResultSet rs = st.executeQuery()) {
@@ -19,6 +19,7 @@ public class AisleDAO extends DBContext {
                     a.setAreaId(rs.getString("areaid"));
                     a.setName(rs.getString("name"));
                     a.setDescription(rs.getString("description"));
+                    a.setCategoryId(rs.getString("category_id"));
                     list.add(a);
                 }
             }
