@@ -1,17 +1,36 @@
 package dal;
 
-import model.*;
+import model.Product;
+import model.ProductWithWarehouses;
+import model.WarehouseStock;
+import model.Warehouse;
+import model.RackLotStock; // Cần import các model khác nếu chúng được sử dụng trong các phương thức.
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ProductDAO extends DBContext {
 
+    // Lấy Map<ProductID, ProductName>
+    public Map<String, String> getProductNameMap() {
+        Map<String, String> map = new HashMap<>();
+        String sql = "SELECT productid, name FROM [dbo].[product]";
+        try (PreparedStatement ps = connection.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                map.put(rs.getString("productid"), rs.getString("name"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return map;
+    }
+
     // Đếm tổng số sản phẩm (để tính phân trang)
     public int getTotalProducts(String searchKeyword) {
+        // Chú ý: Cần điều chỉnh câu lệnh SQL để phù hợp với cách dùng tham số '?'
+        // Dùng `OR name LIKE ? OR productid LIKE ?` sẽ cần 2 tham số, không cần tham số đầu tiên `? IS NULL` nếu dùng cách này.
+        // Cách dùng dưới đây là một pattern SQL phổ biến để xử lý tham số tìm kiếm tùy chọn:
         String sql = "SELECT COUNT(*) as total FROM product " +
                 "WHERE ? IS NULL OR name LIKE ? OR productid LIKE ?";
 
@@ -20,9 +39,29 @@ public class ProductDAO extends DBContext {
                     ? "%" + searchKeyword.trim() + "%"
                     : null;
 
-            ps.setString(1, searchPattern);
-            ps.setString(2, searchPattern);
-            ps.setString(3, searchPattern);
+            // Nếu searchPattern là null, tham số 1 sẽ là NULL, điều kiện đầu tiên `? IS NULL` sẽ đúng,
+            // còn 2 tham số tiếp theo cũng là NULL nhưng điều kiện LIKE với NULL có thể không hoạt động như mong muốn.
+            // *Cách fix SQL/Binding Parameter tốt hơn*:
+            // WHERE (? IS NULL OR name LIKE ? OR productid LIKE ?)
+            // BIND: ps.setString(1, searchKeyword); ps.setString(2, searchPattern); ps.setString(3, searchPattern);
+            // => Nếu searchKeyword là null, điều kiện đầu sẽ là NULL IS NULL, 2 điều kiện sau là name LIKE NULL (False)
+            // => Nếu searchKeyword không null, điều kiện đầu sẽ là 'kw' IS NULL (False), 2 điều kiện sau sẽ là name LIKE '%kw%' (True/False)
+            // Tuy nhiên, cách binding trong code gốc lại là:
+            // String searchPattern = (searchKeyword != null && !searchKeyword.trim().isEmpty()) ? "%" + searchKeyword.trim() + "%" : null;
+            // ps.setString(1, searchPattern);
+            // ps.setString(2, searchPattern);
+            // ps.setString(3, searchPattern);
+            // Dù không tối ưu, tôi vẫn giữ logic bind parameter từ code gốc.
+
+            if (searchPattern == null) {
+                ps.setNull(1, java.sql.Types.VARCHAR);
+                ps.setNull(2, java.sql.Types.VARCHAR);
+                ps.setNull(3, java.sql.Types.VARCHAR);
+            } else {
+                ps.setString(1, searchPattern);
+                ps.setString(2, searchPattern);
+                ps.setString(3, searchPattern);
+            }
 
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
@@ -88,7 +127,7 @@ public class ProductDAO extends DBContext {
                         "    p.productid, " +
                         "    w.warehouseid, " +
                         "    w.name AS warehouse_name, " +
-                        "    r.aisleid, " +
+                        "    r.aisleid, " + // Thêm aisleid vào CTE
                         "    SUM(ISNULL(rl.quantity,0)) AS qty_in_warehouse " +
                         "  FROM product p " +
                         "  LEFT JOIN lotdetail ld  ON ld.product_id = p.productid " +
@@ -97,15 +136,15 @@ public class ProductDAO extends DBContext {
                         "  LEFT JOIN aisle ai      ON ai.aisleid = r.aisleid " +
                         "  LEFT JOIN area ar       ON ar.areaid = ai.areaid " +
                         "  LEFT JOIN warehouse w   ON w.warehouseid = ar.warehouseid " +
-                        "  GROUP BY p.productid, w.warehouseid, w.name, r.aisleid " +
+                        "  GROUP BY p.productid, w.warehouseid, w.name, r.aisleid " + // Thêm vào GROUP BY
                         ") " +
                         "SELECT p.productid, p.name, p.avgprice, p.description, " +
-                        "       s.warehouseid, s.warehouse_name, s.aisleid, ai.name as aisleName, " +
-                        "       ISNULL(s.qty_in_warehouse,0) AS qty, " +
-                        "       (SELECT MIN(purchase_price) FROM lotdetail WHERE product_id = p.productid) as lowestPrice " +
+                        "      s.warehouseid, s.warehouse_name, s.aisleid, ai.name as aisleName, " +
+                        "      ISNULL(s.qty_in_warehouse,0) AS qty, " +
+                        "      (SELECT MIN(purchase_price) FROM lotdetail WHERE product_id = p.productid) as lowestPrice " +
                         "FROM product p " +
                         "LEFT JOIN stock s ON s.productid = p.productid " +
-                        "LEFT JOIN aisle ai ON ai.aisleid = s.aisleid " +
+                        "LEFT JOIN aisle ai ON ai.aisleid = s.aisleid " + // JOIN với aisle để lấy tên
                         "WHERE ( ? IS NULL OR p.name LIKE '%' + ? + '%' OR p.productid LIKE '%' + ? + '%' ) " +
                         "ORDER BY p.name OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 
@@ -114,10 +153,11 @@ public class ProductDAO extends DBContext {
 
         try (PreparedStatement ps = connection.prepareStatement(base)) {
             if (kw == null) {
-                ps.setNull(1, Types.VARCHAR);
-                ps.setNull(2, Types.VARCHAR);
-                ps.setNull(3, Types.VARCHAR);
+                ps.setNull(1, java.sql.Types.VARCHAR);
+                ps.setNull(2, java.sql.Types.VARCHAR);
+                ps.setNull(3, java.sql.Types.VARCHAR);
             } else {
+                // Trong SQL Server, LIKE '%' + ? + '%' hoạt động tốt khi bind String
                 ps.setString(1, kw);
                 ps.setString(2, kw);
                 ps.setString(3, kw);
@@ -185,7 +225,12 @@ public class ProductDAO extends DBContext {
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, productId);
             ps.setInt(2, requiredQty);
-            if (excludeWarehouseId != null) ps.setString(3, excludeWarehouseId);
+
+            int paramIndex = 3;
+            if (excludeWarehouseId != null) {
+                ps.setString(paramIndex, excludeWarehouseId);
+            }
+
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     Warehouse w = new Warehouse();
@@ -203,7 +248,7 @@ public class ProductDAO extends DBContext {
         List<RackLotStock> result = new ArrayList<>();
         String sql =
                 "SELECT rl.racklot_id, rl.rack_id, rl.lotdetail_id, rl.quantity, " +
-                        "       ld.lotdetail_id, r.aisleid, ai.name as aisle_name, w.warehouseid " +
+                        "      ld.lotdetail_id, r.aisleid, ai.name as aisle_name, w.warehouseid " +
                         "FROM racklot rl " +
                         "JOIN lotdetail ld ON ld.lotdetail_id = rl.lotdetail_id " +
                         "JOIN rack r ON r.rackid = rl.rack_id " +
