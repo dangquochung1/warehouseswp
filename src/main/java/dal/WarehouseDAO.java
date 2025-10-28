@@ -2,6 +2,7 @@ package dal;
 
 import model.Product;
 import model.Warehouse;
+import model.ProductWithWarehouses;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,8 +34,9 @@ public class WarehouseDAO extends DBContext{
 
     public List<Product> getProductsByWarehouseId(String warehouseId) {
         List<Product> products = new ArrayList<>();
-        // thêm giá thấp nhất và giá trung bình
-        String sql = "SELECT DISTINCT p.productid, p.name AS productName, p.avgprice as avgPrice, a.aisleid AS aisleId, a.name as aisleName, (select min(purchase_price) from lotdetail where product_id = p.productid) as lowestPrice \n" +
+        String sql = "SELECT DISTINCT p.productid, p.name AS productName, p.avgprice as avgPrice, " +
+                "a.aisleid AS aisleId, a.name as aisleName, " +
+                "(select min(purchase_price) from lotdetail where product_id = p.productid) as lowestPrice \n" +
                 "FROM product p\n" +
                 "JOIN lotdetail ld ON p.productid = ld.product_id\n" +
                 "JOIN racklot rl ON rl.lotdetail_id = ld.lotdetail_id\n" +
@@ -47,7 +49,6 @@ public class WarehouseDAO extends DBContext{
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
 
             ps.setString(1, warehouseId);
-
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
